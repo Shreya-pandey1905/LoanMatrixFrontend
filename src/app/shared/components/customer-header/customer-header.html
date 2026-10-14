@@ -1,0 +1,66 @@
+
+<header class="header">
+
+  <a class="brand" routerLink="/customer/dashboard">
+    <div class="brand-logo">
+      <span>LM</span>
+    </div>
+
+    <div class="brand-details">
+      <span class="brand-name">LoanMatrix</span>
+      <span class="brand-subtitle">CUSTOMER PORTAL</span>
+    </div>
+  </a>
+
+  <div class="header-actions">
+
+    <button
+      type="button"
+      class="notification-button"
+      aria-label="Notifications"
+      title="Notifications"
+      (click)="onNotificationsClick()">
+
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round">
+
+        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+        <path d="M10 21h4"/>
+      </svg>
+
+      <span class="notification-badge"
+            *ngIf="notificationCount > 0">
+        {{ notificationCount }}
+      </span>
+
+    </button>
+
+    <div class="header-divider"></div>
+
+    <button
+      type="button"
+      class="profile-button"
+      aria-label="Customer profile"
+      (click)="onProfileClick()">
+
+      <span class="avatar">C</span>
+
+      <span class="profile-text">
+        <span class="profile-name">Customer</span>
+        <span class="profile-role">Loan Applicant</span>
+      </span>
+
+      <span class="profile-arrow">⌄</span>
+    </button>
+
+  </div>
+
+</header>

@@ -1,0 +1,145 @@
+
+:host {
+  display: block;
+  height: 100%;
+  min-height: 0;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 260px;
+  height: 100%;
+  min-height: 0;
+  background: #10243a;
+  color: #dce5f0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.sidebar-heading {
+  padding: 24px 20px 12px;
+}
+
+.menu-label {
+  color: #8fa6bf;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px 12px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  width: 100%;
+  min-height: 45px;
+  padding: 11px 13px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #dce5f0;
+  font-family: inherit;
+  font-size: 14px;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  box-sizing: border-box;
+}
+
+.nav-link:hover {
+  background: #1c3651;
+  color: #ffffff;
+}
+
+.nav-link.active {
+  background: #254a70;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.nav-icon {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  flex-shrink: 0;
+  font-size: 18px;
+}
+
+.menu-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-toggle {
+  font-family: inherit;
+}
+
+.nav-text {
+  flex: 1;
+}
+
+.arrow {
+  margin-left: auto;
+  font-size: 19px;
+  transition: transform 0.2s;
+}
+
+.arrow.rotated {
+  transform: rotate(180deg);
+}
+
+.submenu {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 3px 0 5px 24px;
+  padding-left: 17px;
+  border-left: 1px solid #3a536d;
+}
+
+.submenu-link {
+  display: block;
+  padding: 10px 9px;
+  border-radius: 6px;
+  color: #b9c9db;
+  font-size: 13px;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+}
+
+.submenu-link:hover,
+.submenu-link.active-submenu {
+  background: #1c3651;
+  color: #ffffff;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 12px;
+  border-top: 1px solid #294058;
+}
+
+.logout-button {
+  color: #ffb4b4;
+}
+
+.logout-button:hover {
+  background: #4a2932;
+  color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 250px;
+  }
+}

@@ -1,0 +1,191 @@
+
+:host {
+  display: block;
+  position: relative;
+  z-index: 10;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 76px;
+  padding: 0 28px;
+  background: #ffffff;
+  border-bottom: 1px solid #e7edf3;
+  box-sizing: border-box;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.brand-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 43px;
+  height: 43px;
+  border-radius: 12px;
+  background: #102f50;
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.brand-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.brand-name {
+  color: #10243a;
+  font-size: 20px;
+  font-weight: 750;
+  letter-spacing: -0.5px;
+}
+
+.brand-subtitle {
+  color: #718198;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.6px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.notification-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid #e7edf3;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #334b65;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.notification-button:hover {
+  background: #f2f6fa;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 3px;
+  border: 2px solid #ffffff;
+  border-radius: 20px;
+  background: #dc3545;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  box-sizing: content-box;
+}
+
+.header-divider {
+  width: 1px;
+  height: 38px;
+  background: #e7edf3;
+}
+
+.profile-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+
+.profile-button:hover {
+  background: #f5f7fa;
+}
+
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 39px;
+  height: 39px;
+  border-radius: 50%;
+  background: #e2edfa;
+  color: #173e67;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.profile-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.profile-name {
+  color: #20364d;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.profile-role {
+  color: #8491a3;
+  font-size: 11px;
+}
+
+.profile-arrow {
+  margin-left: 5px;
+  color: #64748b;
+  font-size: 19px;
+}
+
+@media (max-width: 600px) {
+  .header {
+    min-height: 66px;
+    padding: 0 14px;
+  }
+
+  .brand-logo {
+    width: 37px;
+    height: 37px;
+  }
+
+  .brand-name {
+    font-size: 17px;
+  }
+
+  .brand-subtitle {
+    font-size: 8px;
+  }
+
+  .header-actions {
+    gap: 10px;
+  }
+
+  .profile-text,
+  .profile-arrow,
+  .header-divider {
+    display: none;
+  }
+}

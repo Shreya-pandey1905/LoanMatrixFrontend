@@ -1,0 +1,145 @@
+
+<aside class="sidebar">
+
+  <div class="sidebar-heading">
+    <span class="menu-label">CUSTOMER MENU</span>
+  </div>
+
+  <nav class="sidebar-nav">
+
+    <a routerLink="/customer/dashboard"
+       routerLinkActive="active"
+       class="nav-link">
+      <span class="nav-icon">▦</span>
+      <span>Dashboard</span>
+    </a>
+
+    <a routerLink="/customer/kyc"
+       routerLinkActive="active"
+       class="nav-link">
+      <span class="nav-icon">◇</span>
+      <span>KYC Verification</span>
+    </a>
+
+    <a routerLink="/customer/cibil"
+       routerLinkActive="active"
+       class="nav-link">
+      <span class="nav-icon">◉</span>
+      <span>CIBIL</span>
+    </a>
+
+    <a routerLink="/customer/scorecard"
+       routerLinkActive="active"
+       class="nav-link">
+      <span class="nav-icon">▤</span>
+      <span>Scorecard</span>
+    </a>
+
+    <!-- Loan Processing -->
+    <div class="menu-group">
+
+      <button type="button"
+              class="nav-link menu-toggle"
+              (click)="toggleLoanProcessing()"
+              [attr.aria-expanded]="loanProcessingOpen">
+
+        <span class="nav-icon">₹</span>
+        <span class="nav-text">Loan Processing</span>
+        <span class="arrow"
+              [class.rotated]="loanProcessingOpen">⌄</span>
+      </button>
+
+      <div class="submenu" *ngIf="loanProcessingOpen">
+
+        <a routerLink="/customer/loan-processing/apply"
+           routerLinkActive="active-submenu"
+           class="submenu-link">
+          Apply Loan
+        </a>
+
+        <a routerLink="/customer/loan-processing/sanction-letter"
+           routerLinkActive="active-submenu"
+           class="submenu-link">
+          Sanction Letter
+        </a>
+
+        <a routerLink="/customer/loan-processing/disbursement"
+           routerLinkActive="active-submenu"
+           class="submenu-link">
+          Disbursement
+        </a>
+
+      </div>
+    </div>
+
+    <a routerLink="/customer/loan-account"
+       routerLinkActive="active"
+       class="nav-link">
+      <span class="nav-icon">▣</span>
+      <span>My Loan Account</span>
+    </a>
+
+    <a routerLink="/customer/emis"
+       routerLinkActive="active"
+       class="nav-link">
+      <span class="nav-icon">▦</span>
+      <span>EMIs</span>
+    </a>
+
+    <!-- Closure -->
+    <div class="menu-group">
+
+      <button type="button"
+              class="nav-link menu-toggle"
+              (click)="toggleClosure()"
+              [attr.aria-expanded]="closureOpen">
+
+        <span class="nav-icon">✓</span>
+        <span class="nav-text">Closure</span>
+        <span class="arrow"
+              [class.rotated]="closureOpen">⌄</span>
+      </button>
+
+      <div class="submenu" *ngIf="closureOpen">
+
+        <a routerLink="/customer/closure/partial"
+           routerLinkActive="active-submenu"
+           class="submenu-link">
+          Partial Closure
+        </a>
+
+        <a routerLink="/customer/closure/full"
+           routerLinkActive="active-submenu"
+           class="submenu-link">
+          Full Closure
+        </a>
+
+      </div>
+    </div>
+
+    <a routerLink="/customer/track-status"
+       routerLinkActive="active"
+       class="nav-link">
+      <span class="nav-icon">◎</span>
+      <span>Track Status</span>
+    </a>
+
+    <a routerLink="/customer/support"
+       routerLinkActive="active"
+       class="nav-link">
+      <span class="nav-icon">?</span>
+      <span>Support</span>
+    </a>
+
+  </nav>
+
+  <div class="sidebar-footer">
+    <button type="button"
+            class="nav-link logout-button"
+            (click)="logout()">
+      <span class="nav-icon">↪</span>
+      <span>Logout</span>
+    </button>
+  </div>
+
+</aside>
