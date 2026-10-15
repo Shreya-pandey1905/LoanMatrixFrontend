@@ -1,0 +1,66 @@
+
+<h2>Support Ticket</h2>
+
+<form (ngSubmit)="createTicket()">
+
+  <label>Subject</label>
+  <input
+    type="text"
+    name="subject"
+    [(ngModel)]="subject"
+    required
+  />
+
+  <br /><br />
+
+  <label>Description</label>
+  <textarea
+    name="description"
+    [(ngModel)]="description"
+    required
+  ></textarea>
+
+  <br /><br />
+
+  <label>Loan Account ID (optional)</label>
+  <input
+    type="number"
+    name="loanAccountId"
+    [(ngModel)]="loanAccountId"
+  />
+
+  <br /><br />
+
+  <button type="submit">Create Ticket</button>
+
+</form>
+
+<hr />
+
+<h3>My Support Tickets</h3>
+
+<table border="1" cellpadding="8">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Subject</th>
+      <th>Description</th>
+      <th>Status</th>
+      <th>Created At</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr *ngFor="let ticket of tickets">
+      <td>{{ ticket.id }}</td>
+      <td>{{ ticket.subject }}</td>
+      <td>{{ ticket.description }}</td>
+      <td>{{ ticket.status }}</td>
+      <td>{{ ticket.createdAt }}</td>
+    </tr>
+
+    <tr *ngIf="tickets.length === 0">
+      <td colspan="5">No support tickets found.</td>
+    </tr>
+  </tbody>
+</table>

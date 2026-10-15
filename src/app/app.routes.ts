@@ -13,6 +13,20 @@ export const routes: Routes = [
           import('./features/customer/dashboard/dashboard')
             .then(m => m.Dashboard)
       },
+
+      {
+        path: 'support',
+        loadComponent: () =>
+          import('./features/customer/support/pages/support/support')
+            .then(m => m.Support)
+      },
+//       {
+//   path: 'admin/support',
+//   loadComponent: () =>
+//     import('./features/admin/support-admin/support-admin')
+//       .then(m => m.SupportAdmin)
+// },
+
       {
         path: '',
         redirectTo: 'dashboard',

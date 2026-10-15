@@ -1,0 +1,38 @@
+
+h2 {
+  margin-bottom: 20px;
+}
+
+table {
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th {
+  background-color: #1976d2;
+  color: white;
+  text-align: left;
+}
+
+th,
+td {
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+button {
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #125ca1;
+}
+
+select {
+  padding: 6px;
+}
