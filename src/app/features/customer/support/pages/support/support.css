@@ -1,53 +1,226 @@
-
-h2, h3 {
+.support-page {
+  max-width: 1100px;
+  margin: 25px auto;
+  padding: 0 20px;
   color: #333;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-form {
-  max-width: 500px;
-  margin-bottom: 25px;
+.support-card {
+  background: #fff;
+  border: 1px solid #e1e5eb;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 28px;
 }
 
-label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
+.card-header {
+  background: #2878e5;
+  color: #fff;
+  padding: 13px 18px;
 }
 
-input, textarea {
+.card-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+/* Form layout */
+.support-card form {
+  padding: 18px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 17px;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 7px;
+  color: #444;
+}
+
+.form-group input[type="text"],
+.form-group textarea {
   width: 100%;
-  padding: 10px;
   box-sizing: border-box;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  border: 1px solid #d4d9e1;
+  border-radius: 4px;
+  padding: 11px 12px;
+  font-size: 14px;
+  font-family: inherit;
+  background: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-button {
-  padding: 10px 20px;
-  background-color: #1976d2;
-  color: white;
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #2878e5;
+  box-shadow: 0 0 0 3px rgba(40, 120, 229, 0.12);
+}
+
+.form-group input[type="file"] {
+  font-size: 13px;
+  padding: 5px 0;
+}
+
+.validation-error {
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+/* Submit button */
+.form-actions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.submit-btn {
+  background: #2878e5;
+  color: #fff;
   border: none;
-  border-radius: 5px;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
+  transition: background 0.2s;
 }
 
-button:hover {
-  background-color: #125ca1;
+.submit-btn:hover:not(:disabled) {
+  background: #175fbd;
 }
 
-table {
+.submit-btn:disabled {
+  background: #9abbe9;
+  cursor: not-allowed;
+}
+
+/* My Tickets section */
+.tickets-section {
+  background: #fff;
+  border: 1px solid #e1e5eb;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+}
+
+.tickets-header {
+  background: #079b65;
+  color: #fff;
+  padding: 12px 18px;
+}
+
+.tickets-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.tickets-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 15px;
+  font-size: 13px;
 }
 
-th {
-  background-color: #1976d2;
-  color: white;
-}
-
-th, td {
-  padding: 10px;
+.tickets-table th,
+.tickets-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #e8ebef;
   text-align: left;
-  border: 1px solid #ddd;
+  vertical-align: top;
+}
+
+.tickets-table th {
+  background: #f5f7fa;
+  color: #333;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.tickets-table tbody tr:hover {
+  background: #f8fbff;
+}
+
+.tickets-table td:nth-child(3) {
+  min-width: 180px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.empty-state {
+  text-align: center !important;
+  padding: 25px !important;
+  color: #777;
+}
+
+/* Ticket status */
+.status-badge {
+  display: inline-block;
+  padding: 5px 9px;
+  border-radius: 12px;
+  background: #e9ecef;
+  color: #495057;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-badge.open {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status-badge.in_progress {
+  background: #cfe2ff;
+  color: #084298;
+}
+
+.status-badge.resolved {
+  background: #d1e7dd;
+  color: #0f5132;
+}
+
+.status-badge.closed {
+  background: #e2e3e5;
+  color: #41464b;
+}
+
+/* Responsive layout */
+@media (max-width: 600px) {
+  .support-page {
+    margin: 15px auto;
+    padding: 0 10px;
+  }
+
+  .support-card form {
+    padding: 14px;
+  }
+
+  .card-header h2 {
+    font-size: 18px;
+  }
+
+  .tickets-table th,
+  .tickets-table td {
+    padding: 10px;
+  }
 }
