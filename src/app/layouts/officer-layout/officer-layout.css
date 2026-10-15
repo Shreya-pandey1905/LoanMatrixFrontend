@@ -1,0 +1,36 @@
+
+:host {
+  display: block;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.officer-layout {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  min-height: 100vh;
+  background: #f1f5f9;
+}
+
+.officer-main {
+  flex: 1;
+  min-width: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.officer-content {
+  flex: 1;
+  min-width: 0;
+  padding: 32px;
+  box-sizing: border-box;
+  overflow-x: auto;
+}
+
+@media (max-width: 768px) {
+  .officer-content {
+    padding: 20px 16px;
+  }
+}
