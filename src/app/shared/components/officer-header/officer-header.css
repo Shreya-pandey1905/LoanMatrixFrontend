@@ -1,0 +1,88 @@
+
+:host {
+  display: block;
+}
+
+.officer-header {
+  min-height: 80px;
+  padding: 16px 28px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  box-sizing: border-box;
+}
+
+.page-heading h2 {
+  margin: 0;
+  color: #172554;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.page-heading p {
+  margin: 5px 0 0;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.officer-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.officer-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1e3a8a;
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.officer-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.officer-name {
+  color: #1e293b;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.officer-role {
+  color: #64748b;
+  font-size: 12px;
+}
+
+@media (max-width: 600px) {
+  .officer-header {
+    padding: 14px 16px;
+  }
+
+  .page-heading h2 {
+    font-size: 18px;
+  }
+
+  .page-heading p {
+    font-size: 11px;
+  }
+
+  .officer-details {
+    display: none;
+  }
+}
