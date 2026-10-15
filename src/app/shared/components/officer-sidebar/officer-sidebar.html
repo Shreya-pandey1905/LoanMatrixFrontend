@@ -1,0 +1,117 @@
+
+<aside class="officer-sidebar">
+  <div class="sidebar-brand">
+    <span class="brand-mark">L</span>
+    <div class="brand-text">
+      <h2>LoanMatrix</h2>
+      <p>OFFICER PANEL</p>
+    </div>
+  </div>
+
+  <div class="sidebar-section-label">MAIN MENU</div>
+
+  <nav class="sidebar-nav">
+
+    <a
+      class="menu-link"
+      routerLink="/officer/dashboard"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }">
+      <span class="menu-icon">▦</span>
+      <span>Dashboard</span>
+    </a>
+
+    <div class="menu-group">
+      <button
+        type="button"
+        class="menu-link menu-toggle"
+        (click)="toggleCustomerManagement()"
+        [attr.aria-expanded]="customerManagementOpen">
+        <span class="menu-icon">♙</span>
+        <span class="menu-label">Customer Management</span>
+        <span class="chevron">{{ customerManagementOpen ? '⌄' : '›' }}</span>
+      </button>
+
+      @if (customerManagementOpen) {
+        <div class="submenu">
+          <a routerLink="/officer/kyc-verification" routerLinkActive="active">
+            KYC Verification
+          </a>
+          <a routerLink="/officer/eligibility-check" routerLinkActive="active">
+            Eligibility Check
+          </a>
+          <a routerLink="/officer/scorecard" routerLinkActive="active">
+            Scorecard
+          </a>
+        </div>
+      }
+    </div>
+
+    <div class="menu-group">
+      <button
+        type="button"
+        class="menu-link menu-toggle"
+        (click)="toggleLoanProcessing()"
+        [attr.aria-expanded]="loanProcessingOpen">
+        <span class="menu-icon">₹</span>
+        <span class="menu-label">Loan Processing</span>
+        <span class="chevron">{{ loanProcessingOpen ? '⌄' : '›' }}</span>
+      </button>
+
+      @if (loanProcessingOpen) {
+        <div class="submenu">
+          <a routerLink="/officer/loan-applications" routerLinkActive="active">
+            Loan Applications
+          </a>
+          <a routerLink="/officer/sanction-letters" routerLinkActive="active">
+            Sanction Letters
+          </a>
+          <a routerLink="/officer/loan-accounts" routerLinkActive="active">
+            Loan Accounts
+          </a>
+        </div>
+      }
+    </div>
+
+    <div class="menu-group">
+      <button
+        type="button"
+        class="menu-link menu-toggle"
+        (click)="toggleClosureRequests()"
+        [attr.aria-expanded]="closureRequestsOpen">
+        <span class="menu-icon">✓</span>
+        <span class="menu-label">Closure Requests</span>
+        <span class="chevron">{{ closureRequestsOpen ? '⌄' : '›' }}</span>
+      </button>
+
+      @if (closureRequestsOpen) {
+        <div class="submenu">
+          <a routerLink="/officer/full-closure" routerLinkActive="active">
+            Full Closure
+          </a>
+          <a routerLink="/officer/partial-closure" routerLinkActive="active">
+            Partial Closure
+          </a>
+        </div>
+      }
+    </div>
+
+    <a class="menu-link" routerLink="/officer/reports" routerLinkActive="active">
+      <span class="menu-icon">▤</span>
+      <span>Reports</span>
+    </a>
+
+    <a class="menu-link" routerLink="/officer/support-ticket" routerLinkActive="active">
+      <span class="menu-icon">?</span>
+      <span>Support Ticket</span>
+    </a>
+
+  </nav>
+
+  <div class="sidebar-footer">
+    <button type="button" class="logout-button">
+      <span class="menu-icon">↪</span>
+      <span>Logout</span>
+    </button>
+  </div>
+</aside>
