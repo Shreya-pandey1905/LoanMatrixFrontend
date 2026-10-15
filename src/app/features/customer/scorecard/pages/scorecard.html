@@ -1,0 +1,103 @@
+<div class="scorecard-page">
+  <header class="page-heading">
+    <div>
+      <h1>My Scorecard</h1>
+      <p>View your CIBIL score and loan eligibility result.</p>
+    </div>
+
+    <!-- <button
+      class="refresh-button"
+      type="button"
+      (click)="loadScorecard()"
+      [disabled]="loading">
+      {{ loading ? 'Refreshing...' : 'Refresh' }}
+    </button> -->
+  </header>
+
+  <!-- Loading state -->
+  <div *ngIf="loading && !result" class="message-card">
+    Loading your scorecard...
+  </div>
+
+  <!-- Error state -->
+  <div *ngIf="!loading && errorMessage" class="error-card">
+    <strong>Unable to load scorecard</strong>
+    <p>{{ errorMessage }}</p>
+    <button type="button" (click)="loadScorecard()">
+      Try Again
+    </button>
+  </div>
+
+  <!-- Scorecard result -->
+  <ng-container *ngIf="!loading && result as data">
+
+    <section class="customer-card">
+      <div class="avatar">
+        {{ data.customerName
+          ? data.customerName.charAt(0).toUpperCase()
+          : 'C' }}
+      </div>
+
+      <div class="customer-info">
+        <span class="eyebrow">CUSTOMER</span>
+        <h2>{{ data.customerName }}</h2>
+        <p>Customer ID: {{ data.customerId }}</p>
+      </div>
+    </section>
+
+    <section class="details-grid">
+      <article class="detail-card">
+        <span class="detail-label">CIBIL Score</span>
+        <strong class="detail-value">
+          {{ data.cibilScore ?? 'Not available' }}
+        </strong>
+        <span class="detail-note">Your credit score</span>
+      </article>
+
+      <article class="detail-card">
+        <span class="detail-label">Eligible Loan Amount</span>
+        <strong class="detail-value">
+          <ng-container
+            *ngIf="data.eligibleLoanAmount != null; else noAmount">
+            {{ data.eligibleLoanAmount | currency:'INR':'symbol':'1.0-0' }}
+          </ng-container>
+
+          <ng-template #noAmount>
+            Not available
+          </ng-template>
+        </strong>
+        <span class="detail-note">Based on the eligibility result</span>
+      </article>
+    </section>
+
+    <section
+      class="status-card"
+      [ngClass]="'status-' + status.toLowerCase()">
+
+      <div class="status-icon">
+        <span *ngIf="status === 'Approved'">✓</span>
+        <span *ngIf="status === 'Rejected'">×</span>
+        <span *ngIf="status === 'Pending'">…</span>
+      </div>
+
+      <div class="status-content">
+        <span class="eyebrow">APPLICATION STATUS</span>
+        <h2>{{ status }}</h2>
+        <p>{{ statusDescription }}</p>
+
+        <p
+          *ngIf="status === 'Rejected' && data.rejectionReason"
+          class="rejection-reason">
+          <strong>Reason:</strong>
+          {{ data.rejectionReason }}
+        </p>
+      </div>
+    </section>
+
+    <p class="footer-note">
+      Your scorecard reflects the eligibility information currently available.
+      Use Refresh to check for an updated result.
+    </p>
+
+  </ng-container>
+</div>

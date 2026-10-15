@@ -1,0 +1,88 @@
+
+<div class="cibil-page">
+  <div class="page-heading">
+    <div>
+      <h1><span class="heading-icon">▥</span> CIBIL Score</h1>
+      <p>View your credit score and customer details.</p>
+    </div>
+  </div>
+
+  <div class="cibil-card">
+    <div class="card-top">
+      <h2>CIBIL Score</h2>
+
+      <button
+        class="check-button"
+        (click)="checkScore()"
+        [disabled]="loading || generating || cibilScore !== null">
+        {{
+          generating
+            ? 'Checking...'
+            : cibilScore !== null
+              ? 'Score Generated'
+              : 'Check Score'
+        }}
+      </button>
+    </div>
+
+    <div *ngIf="loading" class="status-message">
+      Loading customer details...
+    </div>
+
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+
+    <ng-container *ngIf="!loading && !errorMessage">
+      <div class="customer-details">
+        <div class="detail-box">
+          <span class="detail-label">Name</span>
+          <span class="detail-value">{{ customerName }}</span>
+        </div>
+
+        <div class="detail-box">
+          <span class="detail-label">PAN Number</span>
+          <span class="detail-value">{{ panCard }}</span>
+        </div>
+      </div>
+
+      <div *ngIf="generating" class="status-message">
+        Generating your CIBIL score. Please wait...
+      </div>
+
+      <div *ngIf="cibilScore !== null" class="score-section">
+        <div class="gauge">
+          <div class="gauge-arc"></div>
+
+          <div
+            class="gauge-needle"
+            [style.transform]="'rotate(' + needleAngle + 'deg)'">
+          </div>
+
+          <div class="gauge-center"></div>
+        </div>
+
+        <div class="gauge-labels">
+          <span>500</span>
+          <span>700</span>
+          <span>900</span>
+        </div>
+
+        <div class="score-value">{{ cibilScore }}</div>
+
+        <div class="last-checked">
+          <span>Last Checked Date</span>
+          <strong>{{ checkDate | date:'dd MMM yyyy' }}</strong>
+
+          <span *ngIf="checkTime">{{ checkTime }}</span>
+        </div>
+      </div>
+
+      <div
+        *ngIf="cibilScore === null && !generating"
+        class="initial-message">
+        Click <strong>Check Score</strong> to generate your CIBIL score.
+      </div>
+    </ng-container>
+  </div>
+</div>
