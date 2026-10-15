@@ -1,0 +1,52 @@
+
+.kyc-page {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+}
+
+h2 {
+  background: #1769e8;
+  color: white;
+  padding: 12px;
+  font-size: 20px;
+  border-radius: 4px;
+}
+
+label {
+  font-weight: 600;
+}
+
+mat-form-field {
+  width: 100%;
+  max-width: 400px;
+}
+
+input[type="file"] {
+  margin-bottom: 12px;
+}
+
+button {
+  width: fit-content;
+}
+
+table {
+  width: 100%;
+  margin-top: 10px;
+}
+
+
+th {
+  background: #202428;
+  color: rgb(20, 19, 19);
+  font-weight: bold;
+  text-align: left;
+}
+
+td, th {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+}

@@ -7,12 +7,20 @@ export const routes: Routes = [
     path: 'customer',
     component: CustomerLayout,
     children: [
+      
       {
         path: 'dashboard',
         loadComponent: () =>
           import('./features/customer/dashboard/dashboard')
             .then(m => m.Dashboard)
       },
+
+{
+  path: 'kyc',
+  loadComponent: () =>
+    import('./features/customer/kyc/pages/kyc')
+      .then(m => m.Kyc)
+},
       {
         path: '',
         redirectTo: 'dashboard',
