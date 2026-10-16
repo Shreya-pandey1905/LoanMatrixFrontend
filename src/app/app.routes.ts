@@ -6,6 +6,7 @@ import { OfficerLayout } from './layouts/officer-layout/officer-layout';
 
 import { authGuard } from './core/auth/guards/auth-guard';
 import { guestGuard } from './core/auth/guards/guest-guard';
+import { TrackingStatus } from './features/customer/tracking-status/pages/tracking-status';
 
 export const routes: Routes = [
 
@@ -36,6 +37,7 @@ export const routes: Routes = [
     path: 'customer',
     component: CustomerLayout,
     canActivate: [authGuard],
+    data: { role: 'CUSTOMER' },
     children: [
       {
         path: 'dashboard',
@@ -56,6 +58,11 @@ export const routes: Routes = [
             .then(m => m.Scorecard)
       },
       {
+      path: 'track-status',
+      component: TrackingStatus
+    },
+
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full'
@@ -63,10 +70,12 @@ export const routes: Routes = [
     ]
   },
 
-  // Officer Module
+  // Loan Officer Module
   {
     path: 'officer',
     component: OfficerLayout,
+    canActivate: [authGuard],
+    data: { role: 'LOAN_OFFICER' },
     children: [
       {
         path: 'dashboard',
@@ -88,6 +97,7 @@ export const routes: Routes = [
     redirectTo: 'login',
     pathMatch: 'full'
   },
+
 
   // Unknown Route
   {
