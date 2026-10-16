@@ -1,0 +1,58 @@
+
+<div class="kyc-container">
+  <button class="back-button" (click)="goBack()">Back to Customers</button>
+
+  <h2>KYC Documents</h2>
+  <p>Customer ID: {{ customerId }}</p>
+
+  <p *ngIf="loading">Loading documents...</p>
+
+  <p class="success" *ngIf="message">{{ message }}</p>
+  <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+  <table *ngIf="!loading && documents.length > 0">
+    <thead>
+      <tr>
+        <th>Document Type</th>
+        <th>Status</th>
+        <th>View Document</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let document of documents">
+        <td>{{ document.documentType }}</td>
+        <td>{{ document.verificationStatus }}</td>
+
+        <td>
+          <button (click)="viewDocument(document.id)">View</button>
+        </td>
+
+        <td>
+          <button
+            *ngIf="document.verificationStatus === 'PENDING'"
+            class="approve-button"
+            (click)="approveDocument(document.id)">
+            Approve
+          </button>
+
+          <button
+            *ngIf="document.verificationStatus === 'PENDING'"
+            class="reject-button"
+            (click)="rejectDocument(document.id)">
+            Reject
+          </button>
+
+          <span *ngIf="document.verificationStatus !== 'PENDING'">
+            No action available
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p *ngIf="!loading && !errorMessage && documents.length === 0">
+    No KYC documents found for this customer.
+  </p>
+</div>
