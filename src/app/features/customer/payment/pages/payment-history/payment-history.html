@@ -1,0 +1,60 @@
+<!-- <h2>Payment History</h2>
+
+<p>Records found: {{ payments.length }}</p>
+
+<pre>{{ payments | json }}</pre> -->
+
+<div class="payment-history">
+  <h2>Payment History</h2>
+  <p>View the payment records for your loan account.</p>
+
+  <div class="search-section">
+    <label for="loanAccountId">Loan Account ID</label>
+
+    <input
+      id="loanAccountId"
+      type="number"
+      min="1"
+      [(ngModel)]="loanAccountId"
+      placeholder="Enter loan account ID"
+    />
+
+    <button
+      type="button"
+      (click)="loadPaymentHistory()"
+      [disabled]="loading"
+    >
+      {{ loading ? 'Loading...' : 'View History' }}
+    </button>
+  </div>
+
+  <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+
+  <p *ngIf="!loading && payments.length === 0 && !errorMessage">
+    No payment records loaded. Enter a loan account ID to view history.
+  </p>
+
+  <div class="table-wrapper" *ngIf="payments.length > 0">
+    <table>
+      <thead>
+        <tr>
+          <th>Payment ID</th>
+          <th>Payment Name</th>
+          <th>Amount</th>
+          <th>Payment Date</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let payment of payments">
+          <td>{{ payment.id }}</td>
+          <td>{{ payment.paymentName }}</td>
+          <td>{{ payment.paymentAmount | currency:'INR' }}</td>
+          <td>{{ payment.paymentDate | date:'dd MMM yyyy' }}</td>
+          <td>{{ payment.paymentStatus }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -23,12 +23,6 @@ export const routes: Routes = [
           import('./features/customer/support/pages/support/support')
             .then(m => m.Support)
       },
-//       {
-//   path: 'admin/support',
-//   loadComponent: () =>
-//     import('./features/admin/support-admin/support-admin')
-//       .then(m => m.SupportAdmin)
-// },
 
       {
         path: 'cibil',
@@ -36,12 +30,46 @@ export const routes: Routes = [
           import('./features/customer/cibil/pages/cibil')
             .then(m => m.Cibil)
       },
+
       {
         path: 'scorecard',
         loadComponent: () =>
           import('./features/customer/scorecard/pages/scorecard')
             .then(m => m.Scorecard)
       },
+
+      // EMI Payment
+      {
+        path: 'emi-payment',
+        loadComponent: () =>
+          import('./features/customer/payment/pages/payment-test/payment-test')
+            .then(m => m.EmiPayment)
+      },
+
+      // Partial Closure Payment
+      {
+        path: 'partial-closure-payment',
+        loadComponent: () =>
+          import('./features/customer/payment/pages/partial-closure-payment/partial-closure-payment')
+            .then(m => m.PartialClosurePayment)
+      },
+
+      // Full Closure Payment
+      {
+        path: 'full-closure-payment',
+        loadComponent: () =>
+          import('./features/customer/payment/pages/full-closure-payment/full-closure-payment')
+            .then(m => m.FullClosurePayment)
+      },
+
+      // Payment History
+      {
+        path: 'payment-history',
+        loadComponent: () =>
+          import('./features/customer/payment/pages/payment-history/payment-history')
+            .then(m => m.PaymentHistory)
+      },
+
       {
         path: '',
         redirectTo: 'dashboard',
@@ -61,6 +89,14 @@ export const routes: Routes = [
           import('./features/officer/dashboard/dashboard')
             .then(m => m.OfficerDashboard)
       },
+
+      {
+        path: 'support',
+        loadComponent: () =>
+          import('./features/officer/support/pages/support/support')
+            .then(m => m.Support)
+      },
+
       {
         path: '',
         redirectTo: 'dashboard',
@@ -79,6 +115,6 @@ export const routes: Routes = [
   // Unknown Route
   {
     path: '**',
-    redirectTo: 'customer/dashboard'
+    redirectTo: 'officer/dashboard'
   }
 ];
