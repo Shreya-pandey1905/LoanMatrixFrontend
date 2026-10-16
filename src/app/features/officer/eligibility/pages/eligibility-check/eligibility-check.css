@@ -1,0 +1,81 @@
+
+.eligibility-page {
+  padding: 32px;
+  min-height: 100%;
+  background: #f5f7fb;
+}
+
+.page-heading {
+  margin-bottom: 28px;
+}
+
+.page-heading h1 {
+  margin: 0 0 8px;
+  color: #1f2937;
+  font-size: 28px;
+}
+
+.page-heading p {
+  margin: 0;
+  color: #6b7280;
+}
+
+.eligibility-card {
+  max-width: 650px;
+  padding: 28px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+.eligibility-card label {
+  display: block;
+  margin-bottom: 10px;
+  color: #374151;
+  font-weight: 600;
+}
+
+.eligibility-card select {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  background: #fff;
+  font-size: 15px;
+}
+
+.eligibility-card button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 7px;
+  background: #2563eb;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.eligibility-card button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.info-message {
+  color: #6b7280;
+}
+
+.error-message {
+  color: #dc2626;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 600px) {
+  .eligibility-page {
+    padding: 20px 14px;
+  }
+
+  .eligibility-card {
+    padding: 20px;
+  }
+}

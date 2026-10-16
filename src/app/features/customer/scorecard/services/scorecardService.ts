@@ -28,7 +28,7 @@ export class ScorecardService {
     'http://localhost:8080/api/v1/user/eligibility/result';
 
   // TEMPORARY: For frontend testing until Angular authentication is ready.
-  private readonly customerId = 20;
+  private readonly customerId = 2;
 
   constructor(private http: HttpClient) {}
 

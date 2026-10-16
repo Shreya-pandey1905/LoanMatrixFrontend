@@ -1,0 +1,114 @@
+<div class="dashboard">
+
+  <header class="dashboard-header">
+    <div>
+      <h1>Officer Dashboard</h1>
+      <p>Monitor customers, loans, collections and pending requests.</p>
+    </div>
+  </header>
+
+  @if (loading && !dashboard) {
+    <div class="message-card">
+      Loading officer dashboard...
+    </div>
+  } @else if (errorMessage) {
+    <div class="message-card error-message">
+      <p>{{ errorMessage }}</p>
+    </div>
+  } @else if (dashboard) {
+
+    <section class="summary-grid">
+
+      <article class="summary-card blue">
+        <div class="card-icon">👥</div>
+        <p>Total Customers</p>
+        <h2>{{ dashboard.totalCustomers ?? 0 }}</h2>
+        <span>Registered customers</span>
+      </article>
+
+      <article class="summary-card purple">
+        <div class="card-icon">🏦</div>
+        <p>Customers with Loans</p>
+        <h2>{{ dashboard.loanCustomers ?? 0 }}</h2>
+        <span>Customers with loan accounts</span>
+      </article>
+
+      <article class="summary-card green">
+        <div class="card-icon">✓</div>
+        <p>Approved KYC Customers</p>
+        <h2>{{ dashboard.approvedKyc ?? 0 }}</h2>
+        <span>Customers with approved KYC</span>
+      </article>
+
+      <article class="summary-card orange">
+        <div class="card-icon">₹</div>
+        <p>Total Loan Amount</p>
+        <h2>
+          {{ (dashboard.totalLoanAmount ?? 0) | currency:'INR':'symbol':'1.0-2' }}
+        </h2>
+        <span>Across all loan accounts</span>
+      </article>
+
+      <article class="summary-card teal">
+        <div class="card-icon">📊</div>
+        <p>Active Loans</p>
+        <h2>{{ dashboard.activeLoans ?? 0 }}</h2>
+        <span>Currently active accounts</span>
+      </article>
+
+      <article class="summary-card green">
+        <div class="card-icon">₹</div>
+        <p>Today's Collection</p>
+        <h2>
+          {{ (dashboard.todaysCollection ?? 0) | currency:'INR':'symbol':'1.0-2' }}
+        </h2>
+        <span>Payments recorded today</span>
+      </article>
+
+      <article class="summary-card orange">
+        <div class="card-icon">◷</div>
+        <p>Pending EMI</p>
+        <h2>{{ dashboard.pendingEmi ?? 0 }}</h2>
+        <span>Pending EMI schedules</span>
+      </article>
+
+      <article class="summary-card red">
+        <div class="card-icon">📄</div>
+        <p>Pending Foreclosures</p>
+        <h2>{{ dashboard.foreclosureRequests ?? 0 }}</h2>
+        <span>Requests awaiting processing</span>
+      </article>
+
+    </section>
+
+    <section class="overview-panel">
+      <div>
+        <h3>Dashboard Overview</h3>
+        <p>Summary of the current loan portfolio and customer activity.</p>
+      </div>
+
+      <div class="overview-stats">
+        <div>
+          <span>Total customers</span>
+          <strong>{{ dashboard.totalCustomers ?? 0 }}</strong>
+        </div>
+
+        <div>
+          <span>Active loans</span>
+          <strong>{{ dashboard.activeLoans ?? 0 }}</strong>
+        </div>
+
+        <div>
+          <span>Pending EMI schedules</span>
+          <strong>{{ dashboard.pendingEmi ?? 0 }}</strong>
+        </div>
+      </div>
+    </section>
+
+  } @else {
+    <div class="message-card">
+      Dashboard data is not available.
+    </div>
+  }
+
+</div>

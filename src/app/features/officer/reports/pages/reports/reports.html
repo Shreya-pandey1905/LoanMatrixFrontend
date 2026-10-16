@@ -1,0 +1,431 @@
+
+<div class="reports-page">
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <div>
+      <h1>Reports</h1>
+      <p>View and analyze LoanMatrix loan, customer and payment reports.</p>
+    </div>
+  </header>
+
+  <!-- Report Cards -->
+  <section class="report-options">
+    <button
+      *ngFor="let report of reportOptions"
+      type="button"
+      class="report-option"
+      [class.selected]="selectedReport === report.key"
+      (click)="selectReport(report.key)">
+
+      <span class="report-option-title">
+        {{ report.label }}
+      </span>
+
+      <span class="report-option-description">
+        {{ report.description }}
+      </span>
+    </button>
+  </section>
+
+  <!-- Report Results -->
+  <section class="report-results">
+
+    <div class="results-header">
+      <div>
+        <h2>{{ selectedReportLabel }}</h2>
+        <p>Report results from the backend.</p>
+      </div>
+    </div>
+
+    <!-- No report selected -->
+    <div *ngIf="!selectedReport" class="empty-state">
+      Select a report above to view its results.
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="message-card">
+      Loading report data...
+    </div>
+
+    <!-- Error -->
+    <div
+      *ngIf="!loading && errorMessage"
+      class="message-card error-message">
+      {{ errorMessage }}
+    </div>
+
+    <!-- Selected Report Content -->
+    <ng-container *ngIf="!loading && !errorMessage && selectedReport">
+
+      <!-- CIBIL Score Range -->
+      <ng-container *ngIf="selectedReport === 'cibil'">
+
+        <div *ngIf="cibilData.length > 0" class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Score Range</th>
+                <th>Category</th>
+                <th>Customers</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let item of cibilData">
+                <td>{{ item.scoreRange }}</td>
+                <td>{{ item.category }}</td>
+                <td>{{ item.customerCount }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div *ngIf="cibilData.length === 0" class="empty-state">
+          No CIBIL score range records found.
+        </div>
+
+      </ng-container>
+
+      <!-- Score Card Wise -->
+      <ng-container *ngIf="selectedReport === 'scorecard'">
+
+        <div *ngIf="scoreCardData.length === 0" class="empty-state">
+          No scorecard records found.
+        </div>
+
+        <div *ngIf="scoreCardData.length > 0" class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Applied Date</th>
+                <th>CIBIL Score</th>
+                <th>Risk</th>
+                <th>Eligible Amount</th>
+                <th>Status</th>
+                <th>Rejection Reason</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let item of scoreCardData">
+                <td>{{ item.customerName }} ({{ item.customerId }})</td>
+                <td>
+                  {{
+                    item.appliedDate
+                      ? (item.appliedDate | date:'mediumDate')
+                      : '—'
+                  }}
+                </td>
+                <td>{{ item.cibilScore ?? '—' }}</td>
+                <td>{{ item.riskCategory || '—' }}</td>
+                <td>
+                  {{
+                    item.eligibleLoanAmount
+                      | currency:'INR':'symbol':'1.0-2'
+                  }}
+                </td>
+                <td>{{ item.currentStatus || '—' }}</td>
+                <td>{{ item.rejectionReason || '—' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </ng-container>
+
+      <!-- Product Wise -->
+      <ng-container *ngIf="selectedReport === 'product'">
+
+        <div *ngIf="productData.length === 0" class="empty-state">
+          No product-wise records found.
+        </div>
+
+        <div *ngIf="productData.length > 0" class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Loan Type</th>
+                <th>Total Loans</th>
+                <th>Total Loan Amount</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let item of productData">
+                <td>{{ item.loanType }}</td>
+                <td>{{ item.totalLoans }}</td>
+                <td>
+                  {{
+                    item.totalLoanAmount
+                      | currency:'INR':'symbol':'1.0-2'
+                  }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </ng-container>
+
+      <!-- Loan Portfolio -->
+      <ng-container *ngIf="selectedReport === 'portfolio'">
+
+        <div *ngIf="portfolioData" class="metrics-grid">
+
+          <article class="metric">
+            <span>Total Loan Accounts</span>
+            <strong>{{ portfolioData.totalLoanAccounts }}</strong>
+          </article>
+
+          <article class="metric">
+            <span>Total Loan Amount</span>
+            <strong>
+              {{
+                portfolioData.totalLoanAmount
+                  | currency:'INR':'symbol':'1.0-2'
+              }}
+            </strong>
+          </article>
+
+          <article class="metric">
+            <span>Outstanding Principal</span>
+            <strong>
+              {{
+                portfolioData.totalOutstandingPrincipal
+                  | currency:'INR':'symbol':'1.0-2'
+              }}
+            </strong>
+          </article>
+
+          <article class="metric">
+            <span>Active Loans</span>
+            <strong>{{ portfolioData.activeLoans }}</strong>
+          </article>
+
+          <article class="metric">
+            <span>Closed Loans</span>
+            <strong>{{ portfolioData.closedLoans }}</strong>
+          </article>
+
+          <article class="metric">
+            <span>Other Status Loans</span>
+            <strong>{{ portfolioData.otherStatusLoans }}</strong>
+          </article>
+
+        </div>
+
+        <div *ngIf="!portfolioData" class="empty-state">
+          No loan portfolio data available.
+        </div>
+
+      </ng-container>
+
+      <!-- EMI Collection -->
+      <ng-container *ngIf="selectedReport === 'emi'">
+
+        <div *ngIf="emiData" class="metrics-grid">
+
+          <article class="metric">
+            <span>Total Installments</span>
+            <strong>{{ emiData.totalInstallments }}</strong>
+          </article>
+
+          <article class="metric">
+            <span>Scheduled Amount</span>
+            <strong>
+              {{
+                emiData.totalScheduledAmount
+                  | currency:'INR':'symbol':'1.0-2'
+              }}
+            </strong>
+          </article>
+
+          <article class="metric">
+            <span>Collected Amount</span>
+            <strong>
+              {{
+                emiData.totalCollectedAmount
+                  | currency:'INR':'symbol':'1.0-2'
+              }}
+            </strong>
+          </article>
+
+          <article class="metric">
+            <span>Paid Installments</span>
+            <strong>{{ emiData.paidInstallments }}</strong>
+          </article>
+
+          <article class="metric">
+            <span>Pending Installments</span>
+            <strong>{{ emiData.pendingInstallments }}</strong>
+          </article>
+
+          <article class="metric">
+            <span>Pending Amount</span>
+            <strong>
+              {{
+                emiData.pendingAmount
+                  | currency:'INR':'symbol':'1.0-2'
+              }}
+            </strong>
+          </article>
+
+        </div>
+
+        <div *ngIf="!emiData" class="empty-state">
+          No EMI collection data available.
+        </div>
+
+      </ng-container>
+
+      <!-- Overdue Report -->
+      <ng-container *ngIf="selectedReport === 'overdue'">
+
+        <div *ngIf="overdueData" class="metrics-grid">
+
+          <article class="metric">
+            <span>Overdue Installments</span>
+            <strong>{{ overdueData.totalOverdueInstallments }}</strong>
+          </article>
+
+          <article class="metric">
+            <span>Overdue EMI Amount</span>
+            <strong>
+              {{
+                overdueData.totalOverdueEmiAmount
+                  | currency:'INR':'symbol':'1.0-2'
+              }}
+            </strong>
+          </article>
+
+          <article class="metric">
+            <span>Penalty Amount</span>
+            <strong>
+              {{
+                overdueData.totalPenaltyAmount
+                  | currency:'INR':'symbol':'1.0-2'
+              }}
+            </strong>
+          </article>
+
+          <article class="metric">
+            <span>Total Overdue Amount</span>
+            <strong>
+              {{
+                overdueData.totalOverdueAmount
+                  | currency:'INR':'symbol':'1.0-2'
+              }}
+            </strong>
+          </article>
+
+          <article class="metric">
+            <span>Overdue Loan Accounts</span>
+            <strong>{{ overdueData.overdueLoanAccounts }}</strong>
+          </article>
+
+        </div>
+
+        <div *ngIf="!overdueData" class="empty-state">
+          No overdue report data available.
+        </div>
+
+      </ng-container>
+
+      <!-- Disbursement -->
+      <ng-container *ngIf="selectedReport === 'disbursement'">
+
+        <div *ngIf="disbursementData" class="metrics-grid">
+
+          <article class="metric">
+            <span>Total Disbursed Loans</span>
+            <strong>{{ disbursementData.totalDisbursedLoans }}</strong>
+          </article>
+
+          <article class="metric">
+            <span>Total Disbursed Amount</span>
+            <strong>
+              {{
+                disbursementData.totalDisbursedAmount
+                  | currency:'INR':'symbol':'1.0-2'
+              }}
+            </strong>
+          </article>
+
+          <article class="metric">
+            <span>Average Disbursed Amount</span>
+            <strong>
+              {{
+                disbursementData.averageDisbursedAmount
+                  | currency:'INR':'symbol':'1.0-2'
+              }}
+            </strong>
+          </article>
+
+          <article class="metric">
+            <span>Latest Disbursement</span>
+            <strong>
+              {{
+                disbursementData.latestDisbursementDate
+                  ? (disbursementData.latestDisbursementDate | date:'mediumDate')
+                  : '—'
+              }}
+            </strong>
+          </article>
+
+        </div>
+
+        <div *ngIf="!disbursementData" class="empty-state">
+          No disbursement data available.
+        </div>
+
+      </ng-container>
+
+      <!-- Prepayment -->
+      <ng-container *ngIf="selectedReport === 'prepayment'">
+
+        <div *ngIf="prepaymentData" class="metrics-grid">
+
+          <article class="metric">
+            <span>Total Prepaid Loans</span>
+            <strong>{{ prepaymentData.totalPrepaidLoans }}</strong>
+          </article>
+
+          <article class="metric">
+            <span>Total Prepaid Amount</span>
+            <strong>
+              {{
+                prepaymentData.totalPrepaidAmount
+                  | currency:'INR':'symbol':'1.0-2'
+              }}
+            </strong>
+          </article>
+
+          <article class="metric">
+            <span>Average Prepaid Amount</span>
+            <strong>
+              {{
+                prepaymentData.averagePrepaidAmount
+                  | currency:'INR':'symbol':'1.0-2'
+              }}
+            </strong>
+          </article>
+
+        </div>
+
+        <div *ngIf="!prepaymentData" class="empty-state">
+          No prepayment data available.
+        </div>
+
+      </ng-container>
+
+      <!-- Success Message -->
+      <div *ngIf="successMessage" class="success-message">
+        {{ successMessage }}
+      </div>
+
+    </ng-container>
+
+  </section>
+</div>

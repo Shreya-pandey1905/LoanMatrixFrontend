@@ -1,0 +1,51 @@
+
+<div class="eligibility-page">
+
+  <div class="page-heading">
+    <h1>Eligibility Check</h1>
+    <p>Select a customer to check their loan eligibility.</p>
+  </div>
+
+  <div class="eligibility-card">
+
+    <label for="customer">Select Customer</label>
+
+    <select
+      id="customer"
+      [value]="selectedCustomerId"
+      (change)="onCustomerChange($event)"
+      [disabled]="loading || checking"
+    >
+      <option value="">-- Select Customer --</option>
+
+      @for (customer of customers; track customer.customerId) {
+        <option [value]="customer.customerId">
+          {{ customer.customerName }} (ID: {{ customer.customerId }})
+        </option>
+      }
+    </select>
+
+    @if (loading) {
+      <p class="info-message">Loading pending customers...</p>
+    }
+
+    @if (!loading && customers.length === 0 && !errorMessage) {
+      <p class="info-message">No pending customers found.</p>
+    }
+
+    @if (errorMessage) {
+      <p class="error-message">{{ errorMessage }}</p>
+    }
+
+    <div class="actions">
+      <button
+        type="button"
+        (click)="checkEligibility()"
+        [disabled]="!selectedCustomerId || checking || loading"
+      >
+        {{ checking ? 'Checking...' : 'Check Eligibility' }}
+      </button>
+    </div>
+
+  </div>
+</div>

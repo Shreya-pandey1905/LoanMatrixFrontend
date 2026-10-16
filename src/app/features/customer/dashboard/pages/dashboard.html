@@ -1,0 +1,187 @@
+
+<div class="dashboard">
+  <header class="dashboard-header">
+    <div>
+      <h1>Welcome to LoanMatrix</h1>
+      <p>Manage your loans, EMIs, payments, and KYC documents.</p>
+    </div>
+  </header>
+
+  @if (loading) {
+    <div class="message-card">Loading your dashboard...</div>
+  } @else if (errorMessage) {
+    <div class="message-card error-message">
+      <p>{{ errorMessage }}</p>
+      <button class="refresh-btn" (click)="loadDashboard()">
+        Try Again
+      </button>
+    </div>
+  } @else if (dashboard) {
+
+    <section class="summary-grid">
+      <div class="summary-card">
+        <p>Active Loan Accounts</p>
+        <h2>{{ dashboard.totalActiveLoanAccounts ?? 0 }}</h2>
+      </div>
+
+      <div class="summary-card">
+        <p>Total Loan Amount</p>
+        <h2>{{ (dashboard.totalLoanAmount ?? 0) | currency:'INR':'symbol':'1.0-2' }}</h2>
+      </div>
+
+      <div class="summary-card">
+        <p>Outstanding Principal</p>
+        <h2>{{ (dashboard.totalOutstandingPrincipal ?? 0) | currency:'INR':'symbol':'1.0-2' }}</h2>
+      </div>
+
+      <div class="summary-card">
+        <p>Total Amount Paid</p>
+        <h2>{{ (dashboard.totalAmountPaid ?? 0) | currency:'INR':'symbol':'1.0-2' }}</h2>
+      </div>
+    </section>
+
+    <section class="content-grid">
+      <div class="panel">
+        <h3>Upcoming EMI</h3>
+
+        @if (dashboard.upcomingEmiDueDate) {
+          <h2>{{ (dashboard.upcomingEmiAmount ?? 0) | currency:'INR':'symbol':'1.0-2' }}</h2>
+          <p>Due date: {{ dashboard.upcomingEmiDueDate | date:'dd MMM yyyy' }}</p>
+        } @else {
+          <p class="empty-message">No upcoming EMI found.</p>
+        }
+      </div>
+
+      <div class="panel">
+        <h3>EMI Summary</h3>
+
+        <div class="emi-summary">
+          <div>
+            <h2>{{ dashboard.emisPaid ?? 0 }}</h2>
+            <p>Paid</p>
+          </div>
+
+          <div>
+            <h2>{{ dashboard.emisPending ?? 0 }}</h2>
+            <p>Pending</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h3>My Loan Accounts</h3>
+
+      @if (dashboard.loanAccounts?.length) {
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Account Number</th>
+                <th>Loan Amount</th>
+                <th>Outstanding</th>
+                <th>EMI Amount</th>
+                <th>Interest Rate</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              @for (loan of dashboard.loanAccounts; track loan.loanAccountId) {
+                <tr>
+                  <td>{{ loan.loanAccountNo || '—' }}</td>
+                  <td>{{ loan.loanAmount | currency:'INR':'symbol':'1.0-2' }}</td>
+                  <td>{{ loan.outstandingPrincipal | currency:'INR':'symbol':'1.0-2' }}</td>
+                  <td>{{ loan.emiAmount | currency:'INR':'symbol':'1.0-2' }}</td>
+                  <td>{{ loan.interestRate }}%</td>
+                  <td>
+                    <span class="status-pill">
+                      {{ loan.loanStatus || 'Unknown' }}
+                    </span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <p class="empty-message">You don't have any loan accounts yet.</p>
+      }
+    </section>
+
+    <section class="panel">
+      <h3>Recent Payments</h3>
+
+      @if (dashboard.recentPayments?.length) {
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Payment</th>
+                <th>Account Number</th>
+                <th>Amount</th>
+                <th>Payment Date</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              @for (payment of dashboard.recentPayments; track payment.paymentId) {
+                <tr>
+                  <td>{{ payment.paymentName || 'Payment' }}</td>
+                  <td>{{ payment.loanAccountNo || '—' }}</td>
+                  <td>{{ payment.paymentAmount | currency:'INR':'symbol':'1.0-2' }}</td>
+                  <td>
+                    @if (payment.paymentDate) {
+                      {{ payment.paymentDate | date:'dd MMM yyyy' }}
+                    } @else {
+                      —
+                    }
+                  </td>
+                  <td>
+                    <span class="status-pill">
+                      {{ payment.paymentStatus || 'Unknown' }}
+                    </span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <p class="empty-message">No payment records available.</p>
+      }
+    </section>
+
+    <section class="panel">
+      <div class="panel-heading">
+        <h3>KYC Documents</h3>
+        <span>{{ kycVerifiedCount }} of {{ totalDocuments }} verified</span>
+      </div>
+
+      @if (dashboard.documents?.length) {
+        <div class="document-list">
+          @for (document of dashboard.documents; track document.documentId) {
+            <div class="document-item">
+              <div>
+                <strong>{{ document.documentType }}</strong>
+                <p>Document ID: {{ document.documentId }}</p>
+              </div>
+
+              <span class="status-pill">
+                {{ document.verificationStatus || 'Pending' }}
+              </span>
+            </div>
+          }
+        </div>
+      } @else {
+        <p class="empty-message">No KYC documents found.</p>
+      }
+    </section>
+
+  } @else {
+    <div class="message-card">
+      Dashboard data is not available.
+    </div>
+  }
+</div>
