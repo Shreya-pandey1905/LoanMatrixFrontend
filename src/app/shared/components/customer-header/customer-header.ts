@@ -23,4 +23,5 @@ export class CustomerHeader {
     // Connect this to the customer profile menu later.
     console.log('Profile clicked');
   }
+  
 }
