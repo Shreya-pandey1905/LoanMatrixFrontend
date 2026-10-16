@@ -82,10 +82,24 @@ export class AuthService {
     return localStorage.getItem('role');
   }
 
+  // Save logged-in customer's ID (needed by customer APIs)
+  saveCustomerId(customerId: number | null): void {
+    if (customerId !== null) {
+      localStorage.setItem('customerId', String(customerId));
+    }
+  }
+
+  // Get logged-in customer's ID
+  getCustomerId(): number | null {
+    const customerId = localStorage.getItem('customerId');
+    return customerId ? Number(customerId) : null;
+  }
+
   // Remove authentication data
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
+    localStorage.removeItem('customerId');
   }
 
   // Check login status

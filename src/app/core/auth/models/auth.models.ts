@@ -26,6 +26,7 @@ export interface OtpVerificationRequest {
 export interface LoginResponse {
   token: string;
   role: string;
+  customerId: number | null;
 }
 
 export interface CustomerRegistrationResponse {

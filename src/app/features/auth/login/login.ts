@@ -133,6 +133,7 @@ export class Login implements AfterViewInit, OnDestroy {
         ) {
           this.authService.saveToken(response.data.token);
           this.authService.saveRole(response.data.role);
+          this.authService.saveCustomerId(response.data.customerId);
 
           alert(response.message || 'Google login successful.');
           this.redirectByRole(response.data.role);
@@ -175,6 +176,7 @@ export class Login implements AfterViewInit, OnDestroy {
         ) {
           this.authService.saveToken(response.data.token);
           this.authService.saveRole(response.data.role);
+          this.authService.saveCustomerId(response.data.customerId);
 
           alert(response.message || 'Login successful.');
           this.redirectByRole(response.data.role);
