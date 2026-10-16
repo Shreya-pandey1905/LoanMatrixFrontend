@@ -5,7 +5,7 @@ import { CustomerLayout } from './layouts/customer-layout/customer-layout';
 import { OfficerLayout } from './layouts/officer-layout/officer-layout';
 
 export const routes: Routes = [
-  // Customer Module
+  // Customer routes
   {
     path: 'customer',
     component: CustomerLayout,
@@ -13,7 +13,7 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         loadComponent: () =>
-          import('./features/customer/dashboard/dashboard')
+          import('./features/customer/dashboard/pages/dashboard')
             .then(m => m.Dashboard)
       },
       {
@@ -36,7 +36,7 @@ export const routes: Routes = [
     ]
   },
 
-  // Officer Module
+  // Officer routes
   {
     path: 'officer',
     component: OfficerLayout,
@@ -44,9 +44,44 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         loadComponent: () =>
-          import('./features/officer/dashboard/dashboard')
-            .then(m => m.OfficerDashboard)
+          import('./features/officer/dashboard/pages/dashboard/dashboard')
+            .then(m => m.Dashboard)
       },
+      {
+        path: 'reports',
+        loadComponent: () =>
+          import('./features/officer/reports/pages/reports/reports')
+            .then(m => m.Reports)
+      },
+      {
+        path: 'eligibility-check',
+        loadComponent: () =>
+          import('./features/officer/eligibility/pages/eligibility-check/eligibility-check')
+            .then(m => m.EligibilityCheck)
+      },
+      {
+        path: 'eligibility-result/:customerId',
+        loadComponent: () =>
+          import('./features/officer/eligibility/pages/eligibility-result/eligibility-result')
+            .then(m => m.EligibilityResult)
+      },
+
+      // Officer scorecard customer list
+      {
+        path: 'scorecard',
+        loadComponent: () =>
+          import('./features/officer/scorecard/pages/scorecard-list/scorecard-list')
+            .then(m => m.ScorecardList)
+      },
+
+      // Individual customer scorecard
+      {
+        path: 'scorecard/:customerId',
+        loadComponent: () =>
+          import('./features/officer/scorecard/pages/scorecard-details/scorecard-details')
+            .then(m => m.ScorecardDetails)
+      },
+
       {
         path: '',
         redirectTo: 'dashboard',
@@ -55,14 +90,14 @@ export const routes: Routes = [
     ]
   },
 
-  // Default Route
+  // Default route
   {
     path: '',
     redirectTo: 'customer/dashboard',
     pathMatch: 'full'
   },
 
-  // Unknown Route
+  // Unknown routes
   {
     path: '**',
     redirectTo: 'customer/dashboard'
