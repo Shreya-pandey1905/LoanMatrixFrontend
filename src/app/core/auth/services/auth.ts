@@ -42,7 +42,7 @@ export class AuthService {
     );
   }
 
-  // Customer login
+  // Email and password login
   login(
     request: LoginRequest
   ): Observable<ApiResponse<LoginResponse>> {
@@ -53,29 +53,42 @@ export class AuthService {
   }
 
   // Google login
-  googleLogin(idToken: string): Observable<ApiResponse<LoginResponse>> {
+  googleLogin(
+    idToken: string
+  ): Observable<ApiResponse<LoginResponse>> {
     return this.http.post<ApiResponse<LoginResponse>>(
       `${this.apiUrl}/google`,
       { idToken }
     );
   }
 
-  // Save JWT after successful login
+  // Save JWT
   saveToken(token: string): void {
     localStorage.setItem('token', token);
   }
 
-  // Get saved JWT
+  // Get JWT
   getToken(): string | null {
     return localStorage.getItem('token');
   }
 
-  // Remove JWT during logout
-  logout(): void {
-    localStorage.removeItem('token');
+  // Save role
+  saveRole(role: string): void {
+    localStorage.setItem('role', role);
   }
 
-  // Check whether a token exists
+  // Get role
+  getRole(): string | null {
+    return localStorage.getItem('role');
+  }
+
+  // Remove authentication data
+  logout(): void {
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+  }
+
+  // Check login status
   isLoggedIn(): boolean {
     return !!this.getToken();
   }

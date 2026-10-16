@@ -42,8 +42,20 @@ export class Login implements AfterViewInit, OnDestroy {
   }
 
   private loadGoogleScript(): void {
-    if (document.getElementById('google-identity-script')) {
-      this.initializeGoogle();
+    const existingScript = document.getElementById(
+      'google-identity-script'
+    ) as HTMLScriptElement | null;
+
+    if (existingScript) {
+      if (typeof google !== 'undefined') {
+        this.initializeGoogle();
+      } else {
+        existingScript.addEventListener(
+          'load',
+          () => this.initializeGoogle(),
+          { once: true }
+        );
+      }
       return;
     }
 
@@ -78,6 +90,8 @@ export class Login implements AfterViewInit, OnDestroy {
     const button = document.getElementById('google-signin-button');
 
     if (button) {
+      button.innerHTML = '';
+
       google.accounts.id.renderButton(button, {
         theme: 'outline',
         size: 'large',
@@ -85,6 +99,20 @@ export class Login implements AfterViewInit, OnDestroy {
         shape: 'rectangular',
         width: 300
       });
+    }
+  }
+
+  private redirectByRole(role: string): void {
+    const normalizedRole = role.trim().toUpperCase();
+
+    if (normalizedRole === 'CUSTOMER') {
+      this.router.navigate(['/customer/dashboard']);
+    } else if (normalizedRole === 'LOAN_OFFICER') {
+      this.router.navigate(['/officer/dashboard']);
+    } else {
+      this.authService.logout();
+      alert('Your account has an invalid or unsupported role.');
+      this.router.navigate(['/login']);
     }
   }
 
@@ -98,12 +126,16 @@ export class Login implements AfterViewInit, OnDestroy {
 
     this.authService.googleLogin(idToken).subscribe({
       next: (response) => {
-        if (response.success && response.data?.token) {
+        if (
+          response.success &&
+          response.data?.token &&
+          response.data?.role
+        ) {
           this.authService.saveToken(response.data.token);
+          this.authService.saveRole(response.data.role);
 
           alert(response.message || 'Google login successful.');
-
-          this.router.navigate(['/customer/dashboard']);
+          this.redirectByRole(response.data.role);
         } else {
           alert(response.message || 'Google login failed.');
         }
@@ -136,14 +168,21 @@ export class Login implements AfterViewInit, OnDestroy {
       password: this.password
     }).subscribe({
       next: (response) => {
-        if (response.success && response.data?.token) {
+        if (
+          response.success &&
+          response.data?.token &&
+          response.data?.role
+        ) {
           this.authService.saveToken(response.data.token);
+          this.authService.saveRole(response.data.role);
 
           alert(response.message || 'Login successful.');
-
-          this.router.navigate(['/customer/dashboard']);
+          this.redirectByRole(response.data.role);
         } else {
-          alert(response.message || 'Login failed.');
+          alert(
+            response.message ||
+            'Login failed. The server did not return a token and role.'
+          );
         }
 
         this.loading = false;
@@ -152,7 +191,8 @@ export class Login implements AfterViewInit, OnDestroy {
         console.error('Login failed:', error);
 
         const message =
-          error.error?.message || 'Invalid email or password.';
+          error.error?.message ||
+          'Invalid email or password.';
 
         alert(message);
         this.loading = false;
