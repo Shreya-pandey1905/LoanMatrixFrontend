@@ -1,6 +1,7 @@
 
 import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../../core/auth/services/auth';
 
 @Component({
   selector: 'app-officer-sidebar',
@@ -14,6 +15,11 @@ export class OfficerSidebar {
   loanProcessingOpen = false;
   closureRequestsOpen = false;
 
+
+   constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
   toggleCustomerManagement(): void {
     this.customerManagementOpen = !this.customerManagementOpen;
   }
@@ -24,5 +30,10 @@ export class OfficerSidebar {
 
   toggleClosureRequests(): void {
     this.closureRequestsOpen = !this.closureRequestsOpen;
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }
