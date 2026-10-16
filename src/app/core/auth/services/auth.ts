@@ -17,10 +17,9 @@ import {
   providedIn: 'root'
 })
 export class AuthService {
+  private readonly apiUrl = `${environment.apiUrl}/api/auth`;
 
-  private apiUrl = `${environment.apiUrl}/api/auth`;
-
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
   // Customer registration
   register(
@@ -82,10 +81,31 @@ export class AuthService {
     return localStorage.getItem('role');
   }
 
+  // Save customer ID
+  saveCustomerId(customerId: number): void {
+    localStorage.setItem('customerId', customerId.toString());
+  }
+
+  // Get customer ID
+  getCustomerId(): number | null {
+    const value = localStorage.getItem('customerId');
+
+    if (value === null) {
+      return null;
+    }
+
+    const customerId = Number(value);
+
+    return Number.isSafeInteger(customerId) && customerId > 0
+      ? customerId
+      : null;
+  }
+
   // Remove authentication data
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
+    localStorage.removeItem('customerId');
   }
 
   // Check login status

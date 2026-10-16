@@ -4,6 +4,7 @@ import {
   AfterViewInit,
   OnDestroy
 } from '@angular/core';
+
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -21,7 +22,6 @@ declare const google: any;
   styleUrl: './login.css'
 })
 export class Login implements AfterViewInit, OnDestroy {
-
   email = '';
   password = '';
   showPassword = false;
@@ -29,8 +29,8 @@ export class Login implements AfterViewInit, OnDestroy {
   googleLoading = false;
 
   constructor(
-    private authService: AuthService,
-    private router: Router
+    private readonly authService: AuthService,
+    private readonly router: Router
   ) {}
 
   ngAfterViewInit(): void {
@@ -106,8 +106,18 @@ export class Login implements AfterViewInit, OnDestroy {
     const normalizedRole = role.trim().toUpperCase();
 
     if (normalizedRole === 'CUSTOMER') {
+      if (this.authService.getCustomerId() === null) {
+        this.authService.logout();
+        alert('Customer ID is missing from the login response. Please contact support.');
+        this.router.navigate(['/login']);
+        return;
+      }
+
       this.router.navigate(['/customer/dashboard']);
-    } else if (normalizedRole === 'LOAN_OFFICER') {
+    } else if (
+      normalizedRole === 'LOAN_OFFICER' ||
+      normalizedRole === 'LOAN OFFICER'
+    ) {
       this.router.navigate(['/officer/dashboard']);
     } else {
       this.authService.logout();
@@ -131,8 +141,15 @@ export class Login implements AfterViewInit, OnDestroy {
           response.data?.token &&
           response.data?.role
         ) {
+          // Clear details from any previous login.
+          this.authService.logout();
+
           this.authService.saveToken(response.data.token);
           this.authService.saveRole(response.data.role);
+
+          if (response.data.customerId != null) {
+            this.authService.saveCustomerId(response.data.customerId);
+          }
 
           alert(response.message || 'Google login successful.');
           this.redirectByRole(response.data.role);
@@ -173,8 +190,15 @@ export class Login implements AfterViewInit, OnDestroy {
           response.data?.token &&
           response.data?.role
         ) {
+          // Clear details from any previous login.
+          this.authService.logout();
+
           this.authService.saveToken(response.data.token);
           this.authService.saveRole(response.data.role);
+
+          if (response.data.customerId != null) {
+            this.authService.saveCustomerId(response.data.customerId);
+          }
 
           alert(response.message || 'Login successful.');
           this.redirectByRole(response.data.role);
@@ -190,11 +214,11 @@ export class Login implements AfterViewInit, OnDestroy {
       error: (error) => {
         console.error('Login failed:', error);
 
-        const message =
+        alert(
           error.error?.message ||
-          'Invalid email or password.';
+          'Invalid email or password.'
+        );
 
-        alert(message);
         this.loading = false;
       }
     });

@@ -8,20 +8,24 @@ export const guestGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
+  // Allow guests to access login and registration.
   if (!authService.isLoggedIn()) {
     return true;
   }
 
-  const role = authService.getRole()?.toUpperCase();
+  const role = authService.getRole()?.trim().toUpperCase();
 
+  // Redirect already logged-in customers.
   if (role === 'CUSTOMER') {
     return router.createUrlTree(['/customer/dashboard']);
   }
 
-  if (role === 'LOAN_OFFICER') {
+  // Redirect already logged-in loan officers.
+  if (role === 'LOAN_OFFICER' || role === 'LOAN OFFICER') {
     return router.createUrlTree(['/officer/dashboard']);
   }
 
+  // Invalid or missing role.
   authService.logout();
   return true;
 };

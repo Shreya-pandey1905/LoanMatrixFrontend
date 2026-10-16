@@ -14,6 +14,8 @@ import {
   CustomerDashboardData
 } from '../services/customerDashboardService';
 
+import { AuthService } from '../../../../core/auth/services/auth';
+
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -22,9 +24,11 @@ import {
   styleUrl: './dashboard.css'
 })
 export class Dashboard implements OnInit {
-
   private readonly dashboardService =
     inject(CustomerDashboardService);
+
+  private readonly authService =
+    inject(AuthService);
 
   private readonly cdr =
     inject(ChangeDetectorRef);
@@ -32,31 +36,41 @@ export class Dashboard implements OnInit {
   private readonly router =
     inject(Router);
 
-  readonly customerId = 2;
+  customerId: number | null = null;
 
   dashboard: CustomerDashboardData | null = null;
   loading = false;
   errorMessage = '';
 
   ngOnInit(): void {
-    console.log('PAGES DASHBOARD COMPONENT LOADED');
+    console.log('Customer dashboard component loaded.');
+
+    this.customerId = this.authService.getCustomerId();
+
+    if (this.customerId === null) {
+      this.errorMessage =
+        'Customer information is missing. Please log in again.';
+      return;
+    }
+
     this.loadDashboard();
   }
 
   loadDashboard(): void {
+    if (this.customerId === null) {
+      this.errorMessage =
+        'Customer information is missing. Please log in again.';
+      return;
+    }
+
     this.loading = true;
     this.errorMessage = '';
-
-    console.log(
-      '1. Request started. Loading:',
-      this.loading
-    );
 
     this.dashboardService
       .getDashboard(this.customerId)
       .subscribe({
         next: (response) => {
-          console.log('2. API SUCCESS:', response);
+          console.log('Dashboard API response:', response);
 
           if (response.success && response.data) {
             this.dashboard = response.data;
@@ -68,18 +82,11 @@ export class Dashboard implements OnInit {
           }
 
           this.loading = false;
-
           this.cdr.detectChanges();
-
-          console.log('3. State updated:', {
-            loading: this.loading,
-            dashboard: this.dashboard,
-            errorMessage: this.errorMessage
-          });
         },
 
         error: (error) => {
-          console.error('API ERROR:', error);
+          console.error('Dashboard API error:', error);
 
           this.loading = false;
 
@@ -101,8 +108,7 @@ export class Dashboard implements OnInit {
   get kycVerifiedCount(): number {
     return this.dashboard?.documents?.filter(
       document =>
-        document.verificationStatus?.toUpperCase() ===
-        'VERIFIED'
+        document.verificationStatus?.toUpperCase() === 'VERIFIED'
     ).length ?? 0;
   }
 
