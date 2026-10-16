@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../../core/auth/services/auth';
 
 @Component({
   selector: 'app-customer-sidebar',
@@ -13,6 +14,10 @@ export class CustomerSidebar {
 
   loanProcessingOpen = false;
   closureOpen = false;
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   toggleLoanProcessing(): void {
     this.loanProcessingOpen = !this.loanProcessingOpen;
@@ -22,8 +27,8 @@ export class CustomerSidebar {
     this.closureOpen = !this.closureOpen;
   }
 
-  logout(): void {
-  // TODO: Connect to your authentication logout flow.
-  console.log('Customer logout clicked');
-}
+   logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
 }
