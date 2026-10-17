@@ -1,11 +1,15 @@
+
 import {
   Component,
   OnInit,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  inject
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 import { finalize } from 'rxjs';
+
+import { AuthService } from '../../../../core/auth/services/auth';
 
 import {
   ScorecardService,
@@ -20,6 +24,8 @@ import {
   styleUrl: './scorecard.css'
 })
 export class Scorecard implements OnInit {
+
+  private readonly authService = inject(AuthService);
 
   result: CustomerEligibilityResponse | null = null;
 
@@ -36,6 +42,14 @@ export class Scorecard implements OnInit {
   }
 
   loadScorecard(): void {
+    const customerId = this.authService.getCustomerId();
+
+    if (customerId === null) {
+      this.errorMessage =
+        'Customer ID not found. Please log in again.';
+      return;
+    }
+
     this.loading = true;
     this.errorMessage = '';
 
@@ -44,7 +58,7 @@ export class Scorecard implements OnInit {
     console.log('1. Loading scorecard started');
 
     this.scorecardService
-      .getCustomerEligibility()
+      .getCustomerEligibility(customerId)
       .pipe(
         finalize(() => {
           this.loading = false;
