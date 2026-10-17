@@ -1,0 +1,134 @@
+<div class="apply-container">
+  <div class="header-card">
+    <h2>Apply Loan</h2>
+    <p class="subtitle">Submit your details to request financing</p>
+  </div>
+
+  <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+  <form (ngSubmit)="onSubmit()" class="form-card">
+    
+    <!-- Loan Type Dropdown (Direct Home Loan & Car Loan) -->
+    <div class="form-group">
+      <label>Loan Type <span class="required">*</span></label>
+      <select [(ngModel)]="selectedLoanType" name="loanType" (change)="onLoanTypeChange()" required>
+        <option value="" disabled selected>Select Loan</option>
+        <option value="HOME_LOAN">Home Loan</option>
+        <option value="CAR_LOAN">Car Loan</option>
+      </select>
+    </div>
+
+    <!-- Loan Amount & User-Entered Tenure -->
+    <div class="form-row">
+      <div class="form-group">
+        <label>Loan Amount (₹) <span class="required">*</span></label>
+        <input 
+          type="number" 
+          [(ngModel)]="loanAmount" 
+          name="loanAmount" 
+          (input)="onAmountInput()" 
+          [class.input-error]="amountExceeded"
+          placeholder="0.00" 
+          min="1000"
+          required />
+        <!-- Real-time eligibility limit validation message -->
+        <span *ngIf="amountExceeded" class="text-danger">
+          ⚠ Entered amount exceeds your approved eligibility limit. Not allowed.
+        </span>
+      </div>
+
+      <div class="form-group">
+        <label>Tenure Months <span class="required">*</span></label>
+        <input 
+          type="number" 
+          [(ngModel)]="tenureMonths" 
+          name="tenureMonths" 
+          (input)="onTenureInput()" 
+          placeholder="0" 
+          min="1"
+          max="360"
+          required />
+      </div>
+    </div>
+
+    <!-- Auto-Filled Interest Rate & Live EMI Amount -->
+    <div class="form-row">
+      <div class="form-group">
+        <label>Interest Rate (%)</label>
+        <input 
+          type="number" 
+          [value]="interestRate" 
+          readonly 
+          class="readonly-input" />
+      </div>
+
+      <div class="form-group">
+        <label>EMI Amount (₹)</label>
+        <input 
+          type="text" 
+          [value]="calculatedEmi ? (calculatedEmi | number:'1.2-2') : '0.00'" 
+          readonly 
+          class="readonly-input emi-highlight" />
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- Bank Details -->
+    <div class="form-row">
+      <div class="form-group">
+        <label>Bank Name <span class="required">*</span></label>
+        <input 
+          type="text" 
+          [(ngModel)]="bankName" 
+          name="bankName" 
+          placeholder="e.g. State Bank of India" 
+          required />
+      </div>
+
+      <div class="form-group">
+        <label>Bank Account Number <span class="required">*</span></label>
+        <input 
+          type="text" 
+          [(ngModel)]="bankAccountNumber" 
+          name="bankAccountNumber" 
+          placeholder="e.g. 123456789012" 
+          required />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>IFSC Code <span class="required">*</span></label>
+        <input 
+          type="text" 
+          [(ngModel)]="ifscCode" 
+          name="ifscCode" 
+          placeholder="e.g. SBIN0001234" 
+          style="text-transform: uppercase;"
+          required />
+      </div>
+
+      <div class="form-group">
+        <label>Preferred EMI Day of Month (1 - 28) <span class="required">*</span></label>
+        <input 
+          type="number" 
+          [(ngModel)]="emiDay" 
+          name="emiDay" 
+          min="1" 
+          max="28" 
+          placeholder="0" 
+          required />
+      </div>
+    </div>
+
+    <!-- Submit Button (Disabled if amount exceeds eligible limit) -->
+    <div class="form-actions">
+      <button type="submit" [disabled]="submitting || amountExceeded" class="btn-primary">
+        {{ submitting ? 'Submitting...' : 'Apply Loan' }}
+      </button>
+    </div>
+
+  </form>
+</div>

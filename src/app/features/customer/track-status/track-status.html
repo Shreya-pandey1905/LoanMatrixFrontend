@@ -1,0 +1,105 @@
+<div class="track-status-container">
+  <div class="page-header">
+    <h1 class="page-title">Track Application Status</h1>
+    <p class="page-subtitle">Real-time lifecycle tracking of your loan application from submission to disbursement.</p>
+  </div>
+
+  <div *ngIf="loading" class="state-card">
+    <div class="spinner"></div>
+    <p>Checking your application progress...</p>
+  </div>
+
+  <div *ngIf="!loading" class="progress-card">
+    <div class="stepper-header">
+      <span class="stepper-title">Application Lifecycle</span>
+      <span *ngIf="recentDealId" class="deal-id-badge">Deal #{{ recentDealId }}</span>
+      <span *ngIf="activeAccountNo" class="account-badge">Loan A/C: {{ activeAccountNo }}</span>
+    </div>
+
+    <div class="timeline">
+      <!-- Step 1: Application -->
+      <div class="timeline-step" [class.completed]="hasApplication" [class.active]="!hasApplication">
+        <div class="step-indicator">
+          <span class="step-number">{{ hasApplication ? '✓' : '1' }}</span>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title-row">
+            <h4>1. Loan Application</h4>
+            <span class="step-status" [class.badge-success]="hasApplication" [class.badge-pending]="!hasApplication">
+              {{ hasApplication ? 'Submitted' : 'Pending Action' }}
+            </span>
+          </div>
+          <p class="step-desc">Submit your personal details, employment details, and required loan amount.</p>
+          <a *ngIf="!hasApplication" routerLink="/customer/loan-processing/apply" class="step-action-btn">
+            Apply for Loan →
+          </a>
+        </div>
+      </div>
+
+      <!-- Step 2: KYC Verification -->
+      <div class="timeline-step" [class.completed]="kycCompleted" [class.active]="hasApplication && !kycCompleted">
+        <div class="step-indicator">
+          <span class="step-number">{{ kycCompleted ? '✓' : '2' }}</span>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title-row">
+            <h4>2. KYC & Document Verification</h4>
+            <span class="step-status" [class.badge-success]="kycCompleted" [class.badge-pending]="!kycCompleted">
+              {{ kycCompleted ? 'Verified' : 'In Verification' }}
+            </span>
+          </div>
+          <p class="step-desc">Upload identity proof (Aadhaar, PAN) and address documents for officer review.</p>
+          <a routerLink="/customer/kyc" class="step-action-btn secondary">
+            View KYC Status →
+          </a>
+        </div>
+      </div>
+
+      <!-- Step 3: Sanction Letter -->
+      <div class="timeline-step" [class.completed]="hasSanction" [class.active]="kycCompleted && !hasSanction">
+        <div class="step-indicator">
+          <span class="step-number">{{ hasSanction ? '✓' : '3' }}</span>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title-row">
+            <h4>3. Sanction Letter & Terms Acceptance</h4>
+            <span class="step-status" [class.badge-success]="hasSanction" [class.badge-pending]="!hasSanction">
+              {{ hasSanction ? 'Issued' : 'Under Assessment' }}
+            </span>
+          </div>
+          <p class="step-desc">Review your sanctioned loan amount, interest rate, EMI terms, and accept agreement.</p>
+          <a routerLink="/customer/loan-processing/sanction-letter" class="step-action-btn secondary">
+            View Sanction Letter →
+          </a>
+        </div>
+      </div>
+
+      <!-- Step 4: Disbursement & Loan Account -->
+      <div class="timeline-step" [class.completed]="hasDisbursement" [class.active]="hasSanction && !hasDisbursement">
+        <div class="step-indicator">
+          <span class="step-number">{{ hasDisbursement ? '✓' : '4' }}</span>
+        </div>
+        <div class="step-body">
+          <div class="step-title-row">
+            <h4>4. Loan Disbursement & Account Activation</h4>
+            <span class="step-status" [class.badge-success]="hasDisbursement" [class.badge-pending]="!hasDisbursement">
+              {{ hasDisbursement ? 'Disbursed' : 'Awaiting Settlement' }}
+            </span>
+          </div>
+          <p class="step-desc">Funds disbursed to your bank account and active Loan Account generated for EMI repayment.</p>
+          <div class="step-actions">
+            <a routerLink="/customer/loan-processing/disbursement" class="step-action-btn">
+              Disbursement Details →
+            </a>
+            <a *ngIf="hasActiveLoan" routerLink="/customer/loan-account" class="step-action-btn secondary">
+              My Loan Account →
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

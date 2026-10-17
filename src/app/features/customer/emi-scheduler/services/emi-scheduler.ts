@@ -22,7 +22,7 @@ export interface EmiSchedule {
   interestAmount: number;
   openingBalance: number;
   closingBalance: number;
-  emi: number;
+  emi: number; 
   paymentStatus: string;
   paidDate: string | null;
 }

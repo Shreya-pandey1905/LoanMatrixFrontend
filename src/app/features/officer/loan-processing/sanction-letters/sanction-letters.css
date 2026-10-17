@@ -1,0 +1,493 @@
+.officer-sanction-page {
+  padding: 24px 32px;
+  background-color: #f8fafc;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.btn-top-generate {
+  background-color: #0d6efd;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 18px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-top-generate:hover {
+  background-color: #0b5ed7;
+}
+
+/* Toolbar filters */
+.toolbar-card {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  background: #ffffff;
+  padding: 16px 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px 8px 0 0;
+  align-items: flex-end;
+}
+
+.control-unit {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.control-unit label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.control-unit input,
+.control-unit select {
+  height: 36px;
+  padding: 6px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  font-size: 13px;
+  min-width: 160px;
+}
+
+.date-unit input {
+  min-width: 130px;
+}
+
+.action-buttons-group {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.btn-reset {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-search {
+  background-color: #0d6efd;
+  color: white;
+  border: none;
+  height: 36px;
+  padding: 0 18px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* Table */
+.table-container {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0 0 8px 8px;
+  overflow-x: auto;
+}
+
+.grid-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13px;
+}
+
+.grid-table th {
+  background-color: #123362;
+  color: #ffffff;
+  padding: 12px 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.grid-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+  white-space: nowrap;
+}
+
+.cust-id {
+  color: #0d6efd;
+  font-weight: 600;
+}
+
+.type-pill {
+  border: 1px solid #0d6efd;
+  color: #0d6efd;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.created-at {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.action-btn-row {
+  display: flex;
+  gap: 6px;
+}
+
+.btn-view {
+  background-color: #0d6efd;
+  color: white;
+  border: none;
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.btn-download {
+  background-color: #198754;
+  color: white;
+  border: none;
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+/* Disburse Button Variants */
+.btn-disburse.active-yellow {
+  background-color: #ffc107 !important;
+  color: #111827 !important;
+  border: 1px solid #d97706 !important;
+  cursor: pointer !important;
+  font-weight: 700 !important;
+  box-shadow: 0 2px 4px rgba(245, 158, 11, 0.3);
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.btn-disburse.active-yellow:hover {
+  background-color: #e0a800 !important;
+}
+
+.btn-disburse.disabled-grey {
+  background-color: #e2e8f0 !important;
+  color: #94a3b8 !important;
+  border: 1px solid #cbd5e1 !important;
+  cursor: not-allowed !important;
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.btn-disburse-done {
+  background-color: #f1f5f9;
+  color: #059669;
+  border: 1px solid #a7f3d0;
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: default;
+}
+
+/* Status Badges */
+.badge-status-disbursed {
+  background-color: #198754;
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.badge-status-accepted {
+  background-color: #0284c7;
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.badge-status-pending {
+  background-color: #eab308;
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.empty-text {
+  text-align: center;
+  padding: 30px !important;
+  color: #94a3b8;
+}
+
+/* Modals */
+.modal-layer {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+  padding: 20px;
+}
+
+.modal-card {
+  background: white;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 520px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  overflow: hidden;
+}
+
+.doc-card {
+  max-width: 800px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.modal-head h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #1e293b;
+}
+
+.btn-x {
+  background: none;
+  border: none;
+  font-size: 22px;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.modal-content {
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.loading-state, .error-state {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.loading-state p {
+  color: #64748b;
+  font-size: 15px;
+}
+
+.error-state .err-title {
+  color: #dc2626;
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 6px;
+}
+
+.error-state .err-sub {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.form-row {
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form-row label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.form-row input,
+.form-row select {
+  height: 38px;
+  padding: 6px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.sub-alert {
+  color: #b45309;
+  font-size: 11px;
+}
+
+.alert-box {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  padding: 10px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.modal-actions {
+  padding: 14px 20px;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.btn-grey {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-green-submit {
+  background-color: #198754;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-green-submit:disabled {
+  background-color: #86efac;
+  cursor: not-allowed;
+}
+
+.btn-print {
+  background-color: #0d6efd;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Formal PDF Preview */
+.paper-wrap {
+  padding: 24px;
+  overflow-y: auto;
+  max-height: calc(90vh - 70px);
+}
+
+.official-letter-sheet {
+  background: #ffffff;
+  padding: 30px 40px;
+  border: 1px solid #d1d5db;
+  color: #111827;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.4;
+}
+
+.sheet-title {
+  text-align: center;
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 24px;
+}
+
+.sheet-date, .salutation {
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.body-intro {
+  font-size: 12.5px;
+  margin-bottom: 18px;
+  text-align: justify;
+}
+
+.terms-grid {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.terms-grid td {
+  border: 1px solid #000000;
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+.terms-grid td.col-head {
+  font-weight: 600;
+  width: 45%;
+  background-color: #fbfbfb;
+}
+
+.conditions-box {
+  margin-top: 16px;
+  font-size: 12px;
+}
+
+.cond-list {
+  padding-left: 20px;
+  margin-top: 6px;
+}
+
+.signatory-area {
+  margin-top: 30px;
+  font-size: 12px;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .official-letter-sheet, .official-letter-sheet * {
+    visibility: visible;
+  }
+  .official-letter-sheet {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    border: none;
+    padding: 20px;
+  }
+  .no-print {
+    display: none !important;
+  }
+}

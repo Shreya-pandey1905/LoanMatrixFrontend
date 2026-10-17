@@ -1,0 +1,158 @@
+<div class="pending-deals-card">
+  <!-- Title -->
+  <div class="page-title-row">
+    <h2 class="section-title">Pending Deals</h2>
+    <span class="officer-badge">Officer Review</span>
+  </div>
+
+  <!-- Advanced Top Filter Bar matching Screenshot 2 -->
+  <div class="filter-controls-row">
+    <!-- Loan Type Dropdown -->
+    <select 
+      [(ngModel)]="selectedLoanType" 
+      (change)="applyAllFilters()" 
+      class="filter-select loan-type-select">
+      <option *ngFor="let opt of loanTypeOptions" [value]="opt">{{ opt }}</option>
+    </select>
+
+    <!-- Min Amount -->
+    <input 
+      type="number" 
+      [(ngModel)]="minAmount" 
+      (input)="applyAllFilters()" 
+      placeholder="Min Amount" 
+      class="filter-input amount-input" />
+
+    <!-- Max Amount -->
+    <input 
+      type="number" 
+      [(ngModel)]="maxAmount" 
+      (input)="applyAllFilters()" 
+      placeholder="Max Amount" 
+      class="filter-input amount-input" />
+
+    <!-- Date Preset Filter Dropdown -->
+    <select 
+      [(ngModel)]="dateFilterPreset" 
+      (change)="onDatePresetChange()" 
+      class="filter-select date-select">
+      <option value="All Dates">Date Filter</option>
+      <option value="Today">Today</option>
+      <option value="This Week">This Week</option>
+      <option value="This Month">This Month</option>
+    </select>
+
+    <!-- From Date Picker -->
+    <input 
+      type="date" 
+      [(ngModel)]="fromDate" 
+      (change)="applyAllFilters()" 
+      class="filter-input date-picker" />
+
+    <!-- To Date Picker -->
+    <input 
+      type="date" 
+      [(ngModel)]="toDate" 
+      (change)="applyAllFilters()" 
+      class="filter-input date-picker" />
+
+    <!-- Reset / Refresh Button -->
+    <button class="btn-refresh" (click)="fetchPendingDeals()">Refresh</button>
+  </div>
+
+  <!-- Sub-bar: Entries per page & Search Input -->
+  <div class="table-sub-bar">
+    <div class="entries-group">
+      <select 
+        [(ngModel)]="entriesPerPage" 
+        (change)="updatePagination()" 
+        class="entries-dropdown">
+        <option [value]="5">5</option>
+        <option [value]="10">10</option>
+        <option [value]="25">25</option>
+        <option [value]="50">50</option>
+      </select>
+      <span>entries per page</span>
+    </div>
+
+    <div class="search-group">
+      <label>Search:</label>
+      <input 
+        type="text" 
+        [(ngModel)]="searchTerm" 
+        (input)="applyAllFilters()" 
+        placeholder="" 
+        class="search-box" />
+    </div>
+  </div>
+
+  <!-- Grid Table matching Screenshot 2 columns -->
+  <div class="table-container">
+    <table class="deals-table">
+      <thead>
+        <tr>
+          <th>Customer Name ▲</th>
+          <th>Loan Type</th>
+          <th>Loan Amount</th>
+          <th>ROI</th>
+          <th>Tenure</th>
+          <th>EMI</th>
+          <th>Status</th>
+          <th>Applied Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="loading">
+          <td colspan="9" class="empty-cell">Loading pending deals...</td>
+        </tr>
+
+        <tr *ngIf="!loading && paginatedDeals.length === 0">
+          <td colspan="9" class="empty-cell">No data available in table</td>
+        </tr>
+
+        <tr *ngFor="let item of paginatedDeals">
+          <td class="bold-cell">{{ item.customerName }}</td>
+          <td>{{ formatLoanType(item.loanType) }}</td>
+          <td>₹ {{ item.loanAmount | number:'1.2-2' }}</td>
+          <td>{{ item.interestRate }} %</td>
+          <td>{{ item.tenureMonths }} Mos</td>
+          <td>₹ {{ item.emiAmount | number:'1.2-2' }}</td>
+          <td>
+            <span class="badge-pending">{{ item.status }}</span>
+          </td>
+          <td>{{ item.appliedDate | date:'dd MMM yyyy' }}</td>
+          <td class="actions-cell">
+            <button class="btn-approve" (click)="reviewDeal(item.dealId, 'APPROVED')">Approve</button>
+            <button class="btn-reject" (click)="reviewDeal(item.dealId, 'REJECTED')">Reject</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination Footer matching Screenshot 2 -->
+  <div class="table-footer">
+    <div class="footer-info">
+      Showing {{ getStartIndex() }} to {{ getEndIndex() }} of {{ filteredDeals.length }} entries
+    </div>
+
+    <div class="pagination-controls">
+      <button 
+        class="btn-page" 
+        [disabled]="currentPage === 1" 
+        (click)="goToPage(currentPage - 1)">
+        ‹
+      </button>
+
+      <span class="current-page-num">{{ currentPage }}</span>
+
+      <button 
+        class="btn-page" 
+        [disabled]="currentPage >= totalPages" 
+        (click)="goToPage(currentPage + 1)">
+        ›
+      </button>
+    </div>
+  </div>
+</div>
