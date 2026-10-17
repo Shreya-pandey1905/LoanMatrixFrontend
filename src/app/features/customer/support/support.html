@@ -1,0 +1,91 @@
+<div class="support-container">
+  <div class="page-header">
+    <h1 class="page-title">Help & Support</h1>
+    <p class="page-subtitle">Need assistance with your loan applications, disbursements, or closure requests? We're here to help.</p>
+  </div>
+
+  <div class="support-grid">
+    <div class="left-col">
+      <!-- Contact Cards -->
+      <div class="contact-cards">
+        <div class="contact-card">
+          <div class="icon">📞</div>
+          <h4>Toll-Free Support</h4>
+          <p>1800-123-LOAN (5626)</p>
+          <span class="hours">Mon - Sat: 9:00 AM - 7:00 PM</span>
+        </div>
+
+        <div class="contact-card">
+          <div class="icon">✉</div>
+          <h4>Email Inquiries</h4>
+          <p>support&#64;loanmatrix.com</p>
+          <span class="hours">Guaranteed response in 24 hrs</span>
+        </div>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="faq-card">
+        <h3>Frequently Asked Questions</h3>
+        <div class="faq-list">
+          <div class="faq-item" *ngFor="let item of faqs">
+            <h5 class="faq-q">Q: {{ item.q }}</h5>
+            <p class="faq-a">{{ item.a }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ticket Form -->
+    <div class="ticket-card">
+      <h3>Raise a Support Request</h3>
+      <p class="form-hint">Our loan officers typically respond within 24 business hours.</p>
+
+      <div *ngIf="submitted" class="success-message">
+        <div class="check-icon">✓</div>
+        <h4>Request Submitted Successfully!</h4>
+        <p>Ticket #LM-{{ 10423 + subject.length }} has been opened. Our support executive will contact you shortly.</p>
+        <button class="btn-new" (click)="resetForm()">Submit Another Ticket</button>
+      </div>
+
+      <form *ngIf="!submitted" (ngSubmit)="submitTicket()">
+        <div class="form-group">
+          <label>Category</label>
+          <select [(ngModel)]="category" name="category">
+            <option value="Loan Account">Loan Account & Balance</option>
+            <option value="Disbursement">Disbursement Status</option>
+            <option value="Foreclosure">Foreclosure & Closure Request</option>
+            <option value="EMI & Payment">EMI & Repayment</option>
+            <option value="KYC">KYC & Document Verification</option>
+            <option value="Other">Other Query</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Subject</label>
+          <input
+            type="text"
+            [(ngModel)]="subject"
+            name="subject"
+            placeholder="Brief summary of your query"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Description / Message</label>
+          <textarea
+            [(ngModel)]="message"
+            name="message"
+            rows="5"
+            placeholder="Please describe your query or issue with account/application details..."
+            required
+          ></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit" [disabled]="!subject.trim() || !message.trim()">
+          Submit Support Ticket
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

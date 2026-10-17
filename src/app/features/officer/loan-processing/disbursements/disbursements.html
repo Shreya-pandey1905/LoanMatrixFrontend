@@ -1,0 +1,142 @@
+<div class="disbursements-page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Disbursement Registry</h1>
+      <p class="page-subtitle">Track, audit, and monitor all processed loan disbursements across partner banks.</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-refresh" (click)="loadDisbursements()" [disabled]="loading">
+        ↻ Refresh
+      </button>
+      <a routerLink="/officer/sanction-letters" class="btn-primary">
+        + New Disbursement
+      </a>
+    </div>
+  </div>
+
+  <!-- Summary Stats -->
+  <div class="stats-grid">
+    <div class="stat-card blue">
+      <div class="stat-icon">₹</div>
+      <div class="stat-content">
+        <span class="stat-label">Total Disbursed Volume</span>
+        <h2 class="stat-value">{{ totalDisbursedAmount | currency:'INR':'symbol':'1.0-2' }}</h2>
+        <span class="stat-hint">Across all partner banks</span>
+      </div>
+    </div>
+
+    <div class="stat-card green">
+      <div class="stat-icon">✓</div>
+      <div class="stat-content">
+        <span class="stat-label">Total Disbursements</span>
+        <h2 class="stat-value">{{ totalCount }}</h2>
+        <span class="stat-hint">Successfully transferred</span>
+      </div>
+    </div>
+
+    <div class="stat-card purple">
+      <div class="stat-icon">🏦</div>
+      <div class="stat-content">
+        <span class="stat-label">Partner Banks</span>
+        <h2 class="stat-value">{{ uniquePartners.length }}</h2>
+        <span class="stat-hint">Active settlement channels</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter & Search Bar -->
+  <div class="toolbar-card">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        (ngModelChange)="applyFilters()"
+        placeholder="Search by Deal ID, Account No, Borrower Name, or Bank..."
+      />
+    </div>
+
+    <div class="filter-group">
+      <label>Partner Bank:</label>
+      <select [(ngModel)]="selectedBank" (change)="applyFilters()">
+        <option value="ALL">All Banks</option>
+        <option *ngFor="let bank of uniquePartners" [value]="bank">{{ bank }}</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="state-card">
+    <div class="spinner"></div>
+    <p>Loading disbursement registry...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="!loading && errorMsg" class="state-card error">
+    <p>{{ errorMsg }}</p>
+    <button class="btn-retry" (click)="loadDisbursements()">Try Again</button>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && !errorMsg && filteredDisbursements.length === 0" class="state-card empty">
+    <div class="empty-icon">📂</div>
+    <h3>No Disbursements Found</h3>
+    <p *ngIf="searchQuery || selectedBank !== 'ALL'">No records match your search criteria.</p>
+    <p *ngIf="!searchQuery && selectedBank === 'ALL'">No loans have been disbursed yet. Disburse accepted sanction letters to populate this registry.</p>
+  </div>
+
+  <!-- Data Table -->
+  <div *ngIf="!loading && !errorMsg && filteredDisbursements.length > 0" class="table-card">
+    <div class="table-header">
+      <span class="table-title">Disbursement Records ({{ filteredDisbursements.length }})</span>
+    </div>
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Deal ID</th>
+            <th>Loan Account No</th>
+            <th>Borrower Name</th>
+            <th>Disbursed Amount</th>
+            <th>Settlement Bank</th>
+            <th>Disbursement Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of filteredDisbursements">
+            <td>
+              <span class="badge-deal">#{{ item.dealId }}</span>
+            </td>
+            <td>
+              <span class="account-no">{{ item.loanAccountNo || 'Pending Creation' }}</span>
+            </td>
+            <td>
+              <span class="customer-name">{{ item.customerName }}</span>
+            </td>
+            <td>
+              <strong class="amount">₹ {{ item.disburseAmount | number:'1.2-2' }}</strong>
+            </td>
+            <td>
+              <span class="bank-pill">{{ item.bankPartner }}</span>
+            </td>
+            <td>
+              {{ item.disbursementDate | date:'dd-MMM-yyyy' }}
+            </td>
+            <td>
+              <span class="status-badge" [class.success]="item.status === 'COMPLETED' || item.status === 'DISBURSED' || item.status === 'SUCCESS'">
+                {{ item.status || 'DISBURSED' }}
+              </span>
+            </td>
+            <td>
+              <a routerLink="/officer/loan-accounts" class="action-link" title="View Loan Account">
+                View Account →
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

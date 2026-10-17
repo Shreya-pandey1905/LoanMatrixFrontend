@@ -1,0 +1,341 @@
+<div class="officer-sanction-page">
+  <!-- Top Bar -->
+  <div class="top-row">
+    <h2 class="title">Sanction Letters</h2>
+    <button class="btn-top-generate" (click)="openGenerateModal()">
+      <span>⊕</span> Generate Sanction Letter
+    </button>
+  </div>
+
+  <!-- Filter Toolbar (Matches Officer Reference UI) -->
+  <div class="toolbar-card">
+    <div class="control-unit">
+      <label>Search Customer</label>
+      <input 
+        type="text" 
+        [(ngModel)]="searchCustomer" 
+        (input)="applyFilters()" 
+        placeholder="Enter customer name or ID..." />
+    </div>
+
+    <div class="control-unit date-unit">
+      <label>From Date</label>
+      <input type="date" [(ngModel)]="fromDate" (change)="applyFilters()" />
+    </div>
+
+    <div class="control-unit date-unit">
+      <label>To Date</label>
+      <input type="date" [(ngModel)]="toDate" (change)="applyFilters()" />
+    </div>
+
+    <div class="control-unit">
+      <label>Filter</label>
+      <select [(ngModel)]="selectedFilter" (change)="applyFilters()">
+        <option value="">Select Filter</option>
+        <option value="Home Loan">Home Loan</option>
+        <option value="Car Loan">Car Loan</option>
+        <option value="Personal Loan">Personal Loan</option>
+      </select>
+    </div>
+
+    <div class="control-unit">
+      <label>Sort</label>
+      <select [(ngModel)]="selectedSort" (change)="applyFilters()">
+        <option value="DEFAULT">Sort By Customer</option>
+        <option value="NAME_ASC">Name (A-Z)</option>
+        <option value="NAME_DESC">Name (Z-A)</option>
+        <option value="AMOUNT_DESC">Loan Amount (High to Low)</option>
+        <option value="AMOUNT_ASC">Loan Amount (Low to High)</option>
+      </select>
+    </div>
+
+    <div class="action-buttons-group">
+      <button class="btn-reset" (click)="resetFilters()">Reset</button>
+      <button class="btn-search" (click)="applyFilters()">Search</button>
+    </div>
+  </div>
+
+  <!-- Data Table -->
+  <div class="table-container">
+    <table class="grid-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Customer ID</th>
+          <th>Customer Name</th>
+          <th>Loan Amount</th>
+          <th>Loan Type</th>
+          <th>Tenure</th>
+          <th>Interest</th>
+          <th>EMI</th>
+          <th>Created At</th>
+          <th>Action</th>
+          <th>Disbursement</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="filteredLetters.length === 0">
+          <td colspan="12" class="empty-text">No sanction letters match your search criteria.</td>
+        </tr>
+
+        <tr *ngFor="let row of filteredLetters; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td class="cust-id">{{ row.customerId }}</td>
+          <td>{{ row.customerName }}</td>
+          <td>₹ {{ row.loanAmount | number:'1.2-2' }}</td>
+          <td>
+            <span class="type-pill">{{ row.loanType }}</span>
+          </td>
+          <td>{{ row.tenureMonths }} Months</td>
+          <td>{{ row.interestRate }}%</td>
+          <td>₹ {{ row.emiAmount | number:'1.2-2' }}</td>
+          <td class="created-at">{{ row.createdAt | date:'dd-MM-yyyy hh:mm a' }}</td>
+          <td>
+            <div class="action-btn-row">
+              <button class="btn-view" (click)="openDocumentView(getDealId(row))">View</button>
+              <button class="btn-download" (click)="openDocumentView(getDealId(row))">Download</button>
+            </div>
+          </td>
+
+          <!-- Disbursement Column with Strict States -->
+          <td>
+            <!-- 1. Already Disbursed: Shows ✓ Done -->
+            <button 
+              *ngIf="isDealDisbursed(row)"
+              class="btn-disburse-done" 
+              disabled>
+              ✓ Done
+            </button>
+
+            <!-- 2. Accepted by Customer, awaiting Officer Disburse: ACTIVE Bright Yellow Disburse Button -->
+            <button 
+              *ngIf="!isDealDisbursed(row) && isCustomerAccepted(row)"
+              class="btn-disburse active-yellow"
+              (click)="openDisburseModal(row)">
+              Disburse
+            </button>
+
+            <!-- 3. Not Accepted yet: Grey Disabled Button -->
+            <button 
+              *ngIf="!isDealDisbursed(row) && !isCustomerAccepted(row)"
+              class="btn-disburse disabled-grey" 
+              disabled
+              title="Awaiting customer to click 'Accept Terms'">
+              Disburse
+            </button>
+          </td>
+
+          <!-- Status Column with Accurate Labels -->
+          <td>
+            <span *ngIf="isDealDisbursed(row)" class="badge-status-disbursed">Disbursed</span>
+            <span *ngIf="!isDealDisbursed(row) && isCustomerAccepted(row)" class="badge-status-accepted">Accepted</span>
+            <span *ngIf="!isDealDisbursed(row) && !isCustomerAccepted(row)" class="badge-status-pending">Awaiting Acceptance</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ================= MODAL: PROCESS DISBURSEMENT ================= -->
+<div class="modal-layer" *ngIf="showDisburseModal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3>Process Loan Disbursement</h3>
+      <button class="btn-x" (click)="closeDisburseModal()">&times;</button>
+    </div>
+
+    <div class="modal-content" *ngIf="selectedDisburseRow">
+      <div *ngIf="disburseError" class="alert-box">{{ disburseError }}</div>
+
+      <p style="font-size: 14px; color: #475569; margin-bottom: 16px;">
+        Confirm disbursement of sanctioned funds for <strong>{{ selectedDisburseRow.customerName }}</strong> (Deal #<strong>{{ getDealId(selectedDisburseRow) }}</strong>).
+      </p>
+
+      <div class="form-row">
+        <label>Disbursement Amount</label>
+        <input type="text" [value]="'₹ ' + (selectedDisburseRow.loanAmount | number:'1.2-2')" readonly />
+      </div>
+
+      <div class="form-row">
+        <label>Banking Partner</label>
+        <select [(ngModel)]="bankPartner">
+          <option value="HDFC Bank">HDFC Bank</option>
+          <option value="ICICI Bank">ICICI Bank</option>
+          <option value="Axis Bank">Axis Bank</option>
+          <option value="State Bank of India">State Bank of India</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-grey" (click)="closeDisburseModal()">Cancel</button>
+      <button class="btn-green-submit" [disabled]="processingDisburse" (click)="confirmDisbursement()">
+        {{ processingDisburse ? 'Processing...' : 'Confirm & Disburse' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL: GENERATE SANCTION LETTER ================= -->
+<div class="modal-layer" *ngIf="showGenerateModal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3>Generate Sanction Letter</h3>
+      <button class="btn-x" (click)="closeGenerateModal()">&times;</button>
+    </div>
+
+    <div class="modal-content">
+      <div *ngIf="generateError" class="alert-box">{{ generateError }}</div>
+
+      <div class="form-row">
+        <label>Select Customer</label>
+        <select (change)="onCustomerSelect($event)">
+          <option [value]="null">Select Customer</option>
+          <option *ngFor="let deal of approvedDeals" [value]="deal.dealId || deal.id">
+            #{{ deal.dealId || deal.id }} - {{ deal.customerName }} ({{ deal.loanType }})
+          </option>
+        </select>
+        <small *ngIf="approvedDeals.length === 0" class="sub-alert">
+          Only customers with status APPROVED and no prior letter can be selected.
+        </small>
+      </div>
+
+      <div class="form-row">
+        <label>Loan Amount</label>
+        <input type="text" [value]="selectedDeal ? '₹ ' + (selectedDeal.approvedAmount || selectedDeal.loanAmount) : ''" readonly placeholder="Loan Amount" />
+      </div>
+
+      <div class="form-row">
+        <label>Loan Type</label>
+        <input type="text" [value]="selectedDeal ? selectedDeal.loanType : ''" readonly placeholder="Loan Type" />
+      </div>
+
+      <div class="form-row">
+        <label>Tenure Months</label>
+        <input type="text" [value]="selectedDeal ? selectedDeal.tenureMonths + ' Months' : ''" readonly placeholder="Tenure Months" />
+      </div>
+
+      <div class="form-row">
+        <label>Interest Rate</label>
+        <input type="text" [value]="selectedDeal ? selectedDeal.interestRate + '%' : ''" readonly placeholder="Interest Rate" />
+      </div>
+
+      <div class="form-row">
+        <label>EMI Amount</label>
+        <input type="text" [value]="selectedDeal ? '₹ ' + selectedDeal.emiAmount : ''" readonly placeholder="EMI Amount" />
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-grey" (click)="closeGenerateModal()">Close</button>
+      <button class="btn-green-submit" [disabled]="!selectedDeal || generating" (click)="submitGenerate()">
+        {{ generating ? 'Generating...' : 'Generate' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL: FORMAL SANCTION LETTER PREVIEW ================= -->
+<div class="modal-layer" *ngIf="showDocModal">
+  <div class="modal-card doc-card">
+    <div class="modal-head no-print">
+      <h3>Formal Sanction Letter Preview</h3>
+      <div class="top-doc-actions">
+        <button class="btn-print" (click)="printDocument()" [disabled]="!docData">🖨 Print / Save as PDF</button>
+        <button class="btn-x" (click)="closeDocModal()">&times;</button>
+      </div>
+    </div>
+
+    <div class="modal-content loading-state" *ngIf="loadingDoc">
+      <p>Loading sanction letter details...</p>
+    </div>
+
+    <div class="modal-content error-state" *ngIf="!loadingDoc && docErrorMessage">
+      <p class="err-title">{{ docErrorMessage }}</p>
+      <p class="err-sub">Could not find a generated sanction letter for this deal.</p>
+    </div>
+
+    <div class="modal-content paper-wrap" *ngIf="!loadingDoc && docData">
+      <div class="official-letter-sheet">
+        <h1 class="sheet-title">{{ docData.headerTitle }}</h1>
+        <p class="sheet-date">Date : {{ docData.sanctionDate }}</p>
+
+        <p class="salutation">Dear {{ docData.applicantName }},</p>
+        <p class="body-intro">
+          Thank you for choosing {{ docData.bankName }}. Based on your application and information provided therein, we are pleased to extend an offer to you for a loan as per the preliminary terms and conditions mentioned below:
+        </p>
+
+        <table class="terms-grid">
+          <tbody>
+            <tr>
+              <td class="col-head">Application No</td>
+              <td>{{ docData.applicationNo }}</td>
+            </tr>
+            <tr>
+              <td class="col-head">Sanction Date</td>
+              <td>{{ docData.sanctionDate }}</td>
+            </tr>
+            <tr>
+              <td class="col-head">Applicant Name</td>
+              <td>{{ docData.applicantName }}</td>
+            </tr>
+            <tr>
+              <td class="col-head">Mobile No</td>
+              <td>{{ docData.mobileNo }}</td>
+            </tr>
+            <tr>
+              <td class="col-head">Loan Type</td>
+              <td>{{ docData.loanType }}</td>
+            </tr>
+            <tr>
+              <td class="col-head">Loan Amount Sanctioned</td>
+              <td>Rs. {{ docData.loanAmountSanctioned | number:'1.2-2' }}</td>
+            </tr>
+            <tr>
+              <td class="col-head">Reference Interest Rate</td>
+              <td>{{ docData.referenceInterestRate }}</td>
+            </tr>
+            <tr>
+              <td class="col-head">Loan Tenure</td>
+              <td>{{ docData.loanTenure }} Months</td>
+            </tr>
+            <tr>
+              <td class="col-head">Total Processing Charges</td>
+              <td>{{ docData.totalProcessingCharges }}</td>
+            </tr>
+            <tr>
+              <td class="col-head">Origination Fee</td>
+              <td>{{ docData.originationFee }}</td>
+            </tr>
+            <tr>
+              <td class="col-head">Sanction Letter Validity</td>
+              <td>{{ docData.sanctionLetterValidity }} Days</td>
+            </tr>
+            <tr>
+              <td class="col-head">Amount of EMI</td>
+              <td>Rs. {{ docData.amountOfEmi | number:'1.2-2' }}</td>
+            </tr>
+            <tr>
+              <td class="col-head">Property Address</td>
+              <td>{{ docData.propertyAddress }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="conditions-box">
+          <p class="cond-title"><strong>Additional Conditions To Comply Prior To Loan Disbursal:</strong></p>
+          <ol class="cond-list">
+            <li *ngFor="let cond of docData.additionalConditions">{{ cond }}</li>
+          </ol>
+        </div>
+
+        <div class="signatory-area">
+          <p><strong>Authorized Signatory</strong></p>
+          <p class="bank-label">{{ docData.authorizedSignatory }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

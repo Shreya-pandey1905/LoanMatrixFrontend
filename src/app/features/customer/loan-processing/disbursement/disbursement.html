@@ -1,0 +1,59 @@
+<div class="disbursement-container">
+  <div class="header-section">
+    <h2 class="page-title">Disbursement Details</h2>
+    <p class="page-subtitle">Track your disbursed loan funds, payment partner, and newly generated loan account details.</p>
+  </div>
+
+  <div *ngIf="loading" class="state-card">
+    <div class="spinner"></div>
+    <p>Fetching your disbursement records...</p>
+  </div>
+
+  <div *ngIf="!loading && disbursements.length === 0" class="empty-state-card">
+    <div class="empty-icon">💳</div>
+    <h3>No Disbursed Loans Yet</h3>
+    <p>
+      Once you accept your Sanction Letter terms and the loan officer verifies and disburses your loan, 
+      your active loan account number and disbursed amount will appear here.
+    </p>
+  </div>
+
+  <div class="disbursements-grid" *ngIf="!loading && disbursements.length > 0">
+    <div *ngFor="let item of disbursements" class="disburse-card">
+      <div class="card-header">
+        <div class="app-info">
+          <span class="app-tag">Application #{{ item.dealId }}</span>
+          <h3 class="account-title">{{ item.loanAccountNo }}</h3>
+        </div>
+        <span class="badge-disbursed">DISBURSED</span>
+      </div>
+
+      <div class="card-details">
+        <div class="detail-row">
+          <span class="label">Borrower Name</span>
+          <span class="val">{{ item.customerName }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Disbursed Amount</span>
+          <span class="val amount">₹ {{ item.disburseAmount | number:'1.2-2' }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Bank Partner</span>
+          <span class="val">{{ item.bankPartner }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Disbursement Date</span>
+          <span class="val">{{ item.disbursementDate | date:'dd-MM-yyyy' }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Loan Account Status</span>
+          <span class="val status-active">ACTIVE</span>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <span class="footer-note">✔ Funds credited successfully</span>
+      </div>
+    </div>
+  </div>
+</div>

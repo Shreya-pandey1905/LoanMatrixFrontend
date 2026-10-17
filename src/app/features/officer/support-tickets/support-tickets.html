@@ -1,0 +1,94 @@
+<div class="tickets-container">
+  <div class="page-header">
+    <h1 class="page-title">Support Ticket Management</h1>
+    <p class="page-subtitle">Review, respond to, and resolve customer queries regarding applications, disbursements, and closures.</p>
+  </div>
+
+  <div class="toolbar">
+    <div class="filter-pills">
+      <button class="pill" [class.active]="filterStatus === 'ALL'" (click)="filterStatus = 'ALL'">
+        All Tickets ({{ tickets.length }})
+      </button>
+      <button class="pill" [class.active]="filterStatus === 'OPEN'" (click)="filterStatus = 'OPEN'">
+        Open
+      </button>
+      <button class="pill" [class.active]="filterStatus === 'IN_PROGRESS'" (click)="filterStatus = 'IN_PROGRESS'">
+        In Progress
+      </button>
+      <button class="pill" [class.active]="filterStatus === 'RESOLVED'" (click)="filterStatus = 'RESOLVED'">
+        Resolved
+      </button>
+    </div>
+  </div>
+
+  <div class="layout-grid">
+    <!-- Tickets List -->
+    <div class="tickets-list-card">
+      <div
+        class="ticket-item"
+        *ngFor="let t of filteredTickets"
+        [class.selected]="selectedTicket?.id === t.id"
+        (click)="selectTicket(t)"
+      >
+        <div class="ticket-top">
+          <span class="ticket-id">{{ t.id }}</span>
+          <span class="status-pill" [ngClass]="t.status.toLowerCase()">{{ t.status }}</span>
+        </div>
+        <h4 class="ticket-subject">{{ t.subject }}</h4>
+        <div class="ticket-meta">
+          <span class="customer">{{ t.customerName }}</span>
+          <span class="category">{{ t.category }}</span>
+          <span class="date">{{ t.date }}</span>
+        </div>
+      </div>
+
+      <div *ngIf="filteredTickets.length === 0" class="empty-tickets">
+        <p>No tickets found for status "{{ filterStatus }}".</p>
+      </div>
+    </div>
+
+    <!-- Ticket Detail & Response Panel -->
+    <div class="ticket-detail-card" *ngIf="selectedTicket">
+      <div class="detail-header">
+        <div>
+          <span class="detail-id">{{ selectedTicket.id }}</span>
+          <h3 class="detail-subject">{{ selectedTicket.subject }}</h3>
+          <span class="detail-author">From: {{ selectedTicket.customerName }} • {{ selectedTicket.category }}</span>
+        </div>
+        <div class="status-actions">
+          <label>Status:</label>
+          <select [(ngModel)]="selectedTicket.status" (change)="updateStatus(selectedTicket.status)">
+            <option value="OPEN">OPEN</option>
+            <option value="IN_PROGRESS">IN PROGRESS</option>
+            <option value="RESOLVED">RESOLVED</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="message-box">
+        <label>Customer Message:</label>
+        <p>{{ selectedTicket.message }}</p>
+      </div>
+
+      <div class="reply-section">
+        <label>Official Officer Response:</label>
+        <textarea
+          [(ngModel)]="replyText"
+          rows="4"
+          placeholder="Type resolution or guidance for the customer..."
+        ></textarea>
+        <div class="reply-actions">
+          <button class="btn-send" (click)="sendReply()" [disabled]="!replyText.trim()">
+            Send Response & Resolve
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ticket-detail-card empty-detail" *ngIf="!selectedTicket">
+      <div class="placeholder-icon">📩</div>
+      <h3>Select a ticket</h3>
+      <p>Click on any ticket from the list to view full customer details and send a response.</p>
+    </div>
+  </div>
+</div>

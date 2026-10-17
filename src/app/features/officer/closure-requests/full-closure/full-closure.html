@@ -1,0 +1,121 @@
+<div class="officer-closure-page">
+  <div class="header-banner">
+    <h2>Foreclosure / Closure Requests</h2>
+    <p>Manage customer foreclosure and closure requests.</p>
+  </div>
+
+  <!-- Table Card (Screenshot 6)[cite: 11] -->
+  <div class="table-card">
+    <div class="tab-indicator">
+      <span class="active-tab">● Foreclosure Requests (Full)</span>
+    </div>
+
+    <table class="officer-table">
+      <thead>
+        <tr>
+          <th>Request ID</th>
+          <th>Loan Account</th>
+          <th>Customer Name</th>
+          <th>Type</th>
+          <th>Request Date</th>
+          <th>Outstanding Principal</th>
+          <th>Foreclosure Amount</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="loading">
+          <td colspan="9" class="center-text">Loading requests...</td>
+        </tr>
+        <tr *ngIf="!loading && filteredRequests.length === 0">
+          <td colspan="9" class="center-text">No pending full foreclosure requests.</td>
+        </tr>
+
+        <tr *ngFor="let item of filteredRequests">
+          <td>FR{{ item.requestId }}</td>
+          <td class="val-blue">{{ item.loanAccountNo }}</td>
+          <td class="bold-text">{{ item.customerName }}</td>
+          <td>{{ item.foreClosureType }}</td>
+          <td>{{ item.requestedDate | date:'dd MMM yyyy' }}</td>
+          <td>₹ {{ item.outstandingPrincipal | number:'1.2-2' }}</td>
+          <td class="val-bold">₹ {{ item.totalSettlementAmount | number:'1.2-2' }}</td>
+          <td>
+            <span class="badge-pending">{{ item.status }}</span>
+          </td>
+          <td>
+            <button class="btn-cyan-view" (click)="openDetails(item)">View</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Details Modal (Screenshot 7)[cite: 12] -->
+<div class="modal-layer" *ngIf="showModal && selectedRequest">
+  <div class="modal-sheet">
+    <div class="modal-top">
+      <h3>Foreclosure Review</h3>
+      <div class="top-actions">
+        <button class="btn-approve" (click)="approveRequest()">Approve</button>
+        <button class="btn-reject" (click)="closeModal()">Reject</button>
+        <button class="btn-close" (click)="closeModal()">&times;</button>
+      </div>
+    </div>
+
+    <div class="modal-content-grid">
+      <!-- Loan & Customer Details[cite: 12] -->
+      <div class="detail-block">
+        <h4>Loan & Customer Details</h4>
+        <div class="info-row">
+          <span class="lbl">Loan Account No:</span>
+          <span class="val val-blue">{{ selectedRequest.loanAccountNo }}</span>
+        </div>
+        <div class="info-row">
+          <span class="lbl">Customer Name:</span>
+          <span class="val">{{ selectedRequest.customerName }}</span>
+        </div>
+        <div class="info-row">
+          <span class="lbl">Outstanding Principal:</span>
+          <span class="val">₹ {{ selectedRequest.outstandingPrincipal | number:'1.2-2' }}</span>
+        </div>
+      </div>
+
+      <!-- Foreclosure Details[cite: 12] -->
+      <div class="detail-block">
+        <h4>Foreclosure Details</h4>
+        <div class="info-row">
+          <span class="lbl">Request ID:</span>
+          <span class="val">FR{{ selectedRequest.requestId }}</span>
+        </div>
+        <div class="info-row">
+          <span class="lbl">Requested Date:</span>
+          <span class="val">{{ selectedRequest.requestedDate | date:'dd MMM yyyy' }}</span>
+        </div>
+        <div class="info-row">
+          <span class="lbl">Foreclosure Type:</span>
+          <span class="val">{{ selectedRequest.foreClosureType }}</span>
+        </div>
+        <div class="info-row">
+          <span class="lbl">Penalty Amount:</span>
+          <span class="val val-danger">₹ {{ selectedRequest.penaltyAmount | number:'1.2-2' }}</span>
+        </div>
+        <div class="info-row">
+          <span class="lbl">Total Settlement Amount:</span>
+          <span class="val val-success bold">₹ {{ selectedRequest.totalSettlementAmount | number:'1.2-2' }}</span>
+        </div>
+        <div class="info-row">
+          <span class="lbl">Status:</span>
+          <span class="badge-pending">{{ selectedRequest.status }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Customer Note[cite: 12] -->
+    <div class="note-section">
+      <span class="lbl">Customer Note:</span>
+      <p class="note-text">{{ selectedRequest.reason || 'None' }}</p>
+    </div>
+  </div>
+</div>

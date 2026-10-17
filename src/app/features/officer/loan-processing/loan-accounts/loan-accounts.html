@@ -1,0 +1,156 @@
+<div class="officer-account-page">
+  <h2 class="page-title">Loan Accounts</h2>
+
+  <!-- Top Controls Bar matching Screenshot 3 -->
+  <div class="controls-toolbar">
+    <div class="left-controls">
+      <select [(ngModel)]="statusFilter" (change)="onStatusChange()" class="filter-select">
+        <option value="All Status">All Status</option>
+        <option value="Active">Active</option>
+        <option value="Closed">Closed</option>
+      </select>
+
+      <div class="entries-wrapper">
+        <select [(ngModel)]="entriesPerPage" class="entries-select">
+          <option [value]="10">10</option>
+          <option [value]="25">25</option>
+          <option [value]="50">50</option>
+        </select>
+        <span>entries per page</span>
+      </div>
+    </div>
+
+    <div class="right-search">
+      <label>Search:</label>
+      <input 
+        type="text" 
+        [(ngModel)]="searchQuery" 
+        (input)="applySearch()" 
+        placeholder="Account No or Customer..." 
+        class="search-input" />
+    </div>
+  </div>
+
+  <!-- Grid Table matching Screenshot 3 column structure -->
+  <div class="table-wrap">
+    <table class="account-table">
+      <thead>
+        <tr>
+          <th>Loan Account No ▲</th>
+          <th>Customer Name</th>
+          <th>Loan Amount</th>
+          <th>Outstanding Principal</th>
+          <th>Status</th>
+          <th>Interest Rate</th>
+          <th>Tenure</th>
+          <th>EMI Amount</th>
+          <th>Disbursement Date</th>
+          <th>Total Paid</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="loading">
+          <td colspan="11" class="placeholder-cell">Loading accounts...</td>
+        </tr>
+
+        <tr *ngIf="!loading && filteredAccounts.length === 0">
+          <td colspan="11" class="placeholder-cell">No loan accounts found.</td>
+        </tr>
+
+        <tr *ngFor="let item of filteredAccounts">
+          <td class="col-acc-no">{{ item.loanAccountNo }}</td>
+          <td>{{ item.customerName }}</td>
+          <td>₹ {{ item.loanAmount | number:'1.2-2' }}</td>
+          <td class="col-outstanding">₹ {{ item.outstandingPrincipal | number:'1.2-2' }}</td>
+          <td>
+            <span [ngClass]="item.status?.toLowerCase() === 'active' ? 'badge-active' : 'badge-closed'">
+              {{ item.status }}
+            </span>
+          </td>
+          <td>{{ item.interestRate }} %</td>
+          <td>{{ item.tenureMonths }} Months</td>
+          <td>₹ {{ item.emiAmount | number:'1.2-2' }}</td>
+          <td>{{ item.disbursementDate | date:'dd MMM yyyy' }}</td>
+          <td class="col-paid">₹ {{ item.totalPaid | number:'1.2-2' }}</td>
+          <td>
+            <button class="btn-cyan-view" (click)="viewDetails(item.loanAccountNo)">
+              View
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ================= MODAL MATCHING SCREENSHOT 4 ================= -->
+<div class="modal-layer" *ngIf="showModal">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h3>Loan Account Details</h3>
+      <button class="close-x" (click)="closeModal()">&times;</button>
+    </div>
+
+    <div *ngIf="loadingProfile" class="modal-placeholder">
+      <p>Loading details...</p>
+    </div>
+
+    <div *ngIf="!loadingProfile && modalError" class="modal-placeholder error">
+      <p>{{ modalError }}</p>
+    </div>
+
+    <div class="modal-body" *ngIf="!loadingProfile && selectedProfile">
+      <div class="detail-rows">
+        <div class="row-item">
+          <span class="label">Loan Account No:</span>
+          <span class="value bold-acc">{{ selectedProfile.loanAccountNo }}</span>
+        </div>
+        <div class="row-item">
+          <span class="label">Customer:</span>
+          <span class="value">{{ selectedProfile.customerName }}</span>
+        </div>
+        <div class="row-item">
+          <span class="label">Loan Amount:</span>
+          <span class="value">₹ {{ selectedProfile.loanAmount | number:'1.2-2' }}</span>
+        </div>
+        <div class="row-item">
+          <span class="label">Outstanding Principal:</span>
+          <span class="value val-danger">₹ {{ selectedProfile.outstandingPrincipal | number:'1.2-2' }}</span>
+        </div>
+        <div class="row-item">
+          <span class="label">Loan Status:</span>
+          <span class="value val-status">{{ selectedProfile.loanStatus }}</span>
+        </div>
+        <div class="row-item">
+          <span class="label">Interest Rate:</span>
+          <span class="value">{{ selectedProfile.interestRate }} %</span>
+        </div>
+        <div class="row-item">
+          <span class="label">Tenure Months:</span>
+          <span class="value">{{ selectedProfile.tenureMonths }}</span>
+        </div>
+        <div class="row-item">
+          <span class="label">EMI Amount:</span>
+          <span class="value val-success">₹ {{ selectedProfile.emiAmount | number:'1.2-2' }}</span>
+        </div>
+        <div class="row-item">
+          <span class="label">Total Paid Amount:</span>
+          <span class="value">₹ {{ (selectedProfile.totalPaidAmount || 0) | number:'1.2-2' }}</span>
+        </div>
+        <div class="row-item">
+          <span class="label">Disbursement Date:</span>
+          <span class="value">{{ selectedProfile.disbursementDate | date:'dd MMM yyyy' }}</span>
+        </div>
+        <div class="row-item">
+          <span class="label">Created At:</span>
+          <span class="value">{{ selectedProfile.createdAt | date:'dd MMM yyyy hh:mm a' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-back" (click)="closeModal()">Back</button>
+    </div>
+  </div>
+</div>
