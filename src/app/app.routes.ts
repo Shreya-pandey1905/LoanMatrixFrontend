@@ -67,6 +67,49 @@ export const routes: Routes = [
             .then(m => m.Scorecard)
       },
       {
+        path: 'support',
+        loadComponent: () =>
+          import('./features/customer/support/pages/support/support')
+            .then(m => m.Support)
+      },
+      {
+        path: 'emi-payment',
+        loadComponent: () =>
+          import('./features/customer/payment/pages/payment-test/payment-test')
+            .then(m => m.EmiPayment)
+      },
+{
+        path: 'partial-closure-payment',
+        loadComponent: () =>
+          import('./features/customer/payment/pages/partial-closure-payment/partial-closure-payment')
+            .then(m => m.PartialClosurePayment)
+      },
+      {
+        path: 'full-closure-payment',
+        loadComponent: () =>
+          import('./features/customer/payment/pages/full-closure-payment/full-closure-payment')
+            .then(m => m.FullClosurePayment)
+      },
+      {
+        path: 'payment-history',
+        loadComponent: () =>
+          import('./features/customer/payment/pages/payment-history/payment-history')
+            .then(m => m.PaymentHistory)
+      },
+      {
+  path: 'emi-schedule',
+  loadComponent: () =>
+    import('./features/customer/emi-scheduler/pages/emi-scheduler')
+      .then(m => m.EmiScheduler)
+},
+{
+  path: 'emis',
+  loadComponent: () =>
+    import('./features/customer/emi-scheduler/pages/emi-scheduler')
+      .then(m => m.EmiScheduler)
+}, 
+
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full'
@@ -103,7 +146,12 @@ export const routes: Routes = [
           import('./features/officer/eligibility/pages/eligibility-result/eligibility-result')
             .then(m => m.EligibilityResult)
       },
-
+      {
+        path: 'support',
+        loadComponent: () =>
+          import('./features/officer/support/pages/support/support')
+            .then(m => m.Support)
+      },
       // Officer scorecard customer list
       {
         path: 'scorecard',

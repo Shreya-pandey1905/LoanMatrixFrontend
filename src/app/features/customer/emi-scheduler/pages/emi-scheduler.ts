@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService } from '../../../../core/auth/services/auth';
 import {
   EmiSchedulerService,
@@ -19,6 +20,7 @@ export class EmiScheduler implements OnInit {
   private readonly emiService = inject(EmiSchedulerService);
   private readonly authService = inject(AuthService);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly router = inject(Router);
 
   customerId = 1;
 
@@ -139,4 +141,18 @@ export class EmiScheduler implements OnInit {
       }
     }
   }
+
+  payEmi(emi: EmiSchedule): void {
+  if (this.selectedLoanAccountId === null) {
+    this.errorMessage = 'Please select a loan account.';
+    return;
+  }
+
+  this.router.navigate(['/customer/emi-payment'], {
+    queryParams: {
+      loanAccountId: this.selectedLoanAccountId,
+      emiScheduleId: emi.id
+    }
+  });
+}
 }

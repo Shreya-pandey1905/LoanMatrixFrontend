@@ -115,12 +115,13 @@
 
             <td>
               <button
-                class="pay-button"
-                *ngIf="emi.paymentStatus === 'PENDING'"
-                type="button">
+  class="pay-button"
+  *ngIf="emi.paymentStatus === 'PENDING'"
+  type="button"
+  (click)="payEmi(emi)">
 
-                Pay
-              </button>
+  Pay
+</button>
 
               <span *ngIf="emi.paymentStatus === 'PAID'">
                 Paid
