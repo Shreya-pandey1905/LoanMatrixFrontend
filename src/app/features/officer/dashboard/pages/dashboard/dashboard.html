@@ -1,3 +1,4 @@
+
 <div class="dashboard">
 
   <header class="dashboard-header">
@@ -5,6 +6,13 @@
       <h1>Officer Dashboard</h1>
       <p>Monitor customers, loans, collections and pending requests.</p>
     </div>
+
+    <button
+      type="button"
+      class="logout-button"
+      (click)="logout()">
+      Logout
+    </button>
   </header>
 
   @if (loading && !dashboard) {

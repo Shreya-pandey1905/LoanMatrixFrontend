@@ -1,3 +1,4 @@
+
 import {
   Component,
   OnInit,
@@ -6,6 +7,9 @@ import {
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+
+import { AuthService } from '../../../../../core/auth/services/auth';
 
 import {
   OfficerDashboardService,
@@ -21,10 +25,16 @@ import {
 })
 export class Dashboard implements OnInit {
 
-  private readonly dashboardService =
+  private readonly dashboardService: OfficerDashboardService =
     inject(OfficerDashboardService);
 
-  private readonly cdr =
+  private readonly authService: AuthService =
+    inject(AuthService);
+
+  private readonly router: Router =
+    inject(Router);
+
+  private readonly cdr: ChangeDetectorRef =
     inject(ChangeDetectorRef);
 
   dashboard: OfficerDashboardData | null = null;
@@ -33,7 +43,6 @@ export class Dashboard implements OnInit {
   errorMessage = '';
 
   ngOnInit(): void {
-    // Automatically load dashboard data when the page opens.
     this.loadDashboard();
   }
 
@@ -74,5 +83,10 @@ export class Dashboard implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }
