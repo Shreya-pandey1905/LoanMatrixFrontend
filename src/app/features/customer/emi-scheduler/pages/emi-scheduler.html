@@ -1,0 +1,145 @@
+
+<div class="emi-page">
+
+  <div class="page-header">
+    <div>
+      <h1>EMI Scheduler</h1>
+      <p>View your EMI schedule and loan balance</p>
+    </div>
+  </div>
+
+  <div class="account-selection">
+    <label for="loanAccount">Select Loan Account</label>
+
+    <select
+      id="loanAccount"
+      [(ngModel)]="selectedLoanAccountId"
+      (change)="onLoanAccountChange()">
+
+      <option [ngValue]="null">Select Loan Account</option>
+
+      <option
+        *ngFor="let account of loanAccounts"
+        [ngValue]="account.id">
+
+        {{ account.loanAccountNo }}
+      </option>
+    </select>
+  </div>
+
+  <div class="summary-cards">
+
+    <div class="summary-card">
+      <p>Paid EMIs</p>
+      <h2>{{ paidEmis }}</h2>
+    </div>
+
+    <div class="summary-card">
+      <p>Pending EMIs</p>
+      <h2>{{ pendingEmis }}</h2>
+    </div>
+
+    <div class="summary-card">
+      <p>Remaining Balance</p>
+      <h2>
+        {{ remainingBalance | currency:'INR':'symbol':'1.2-2' }}
+      </h2>
+    </div>
+
+  </div>
+
+  <div class="account-info" *ngIf="selectedLoanAccount">
+    <h3>Loan Account Details</h3>
+
+    <p>
+      <strong>Account Number:</strong>
+      {{ selectedLoanAccount.loanAccountNo }}
+    </p>
+
+    <p>
+      <strong>Loan Amount:</strong>
+      {{ selectedLoanAccount.loanAmount | currency:'INR' }}
+    </p>
+
+    <p>
+      <strong>Monthly EMI:</strong>
+      {{ selectedLoanAccount.emiAmount | currency:'INR' }}
+    </p>
+  </div>
+
+  <div class="schedule-section">
+    <h2>EMI Schedule</h2>
+
+    <p *ngIf="loading">Loading EMI schedule...</p>
+
+    <p class="error-message" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </p>
+
+    <div class="table-container" *ngIf="!loading">
+      <table>
+        <thead>
+          <tr>
+            <th>No.</th>
+            <th>Due Date</th>
+            <th>EMI</th>
+            <th>Principal</th>
+            <th>Interest</th>
+            <th>Opening Balance</th>
+            <th>Closing Balance</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let emi of emiSchedules">
+            <td>{{ emi.installmentNo }}</td>
+            <td>{{ emi.dueDate | date:'dd-MM-yyyy' }}</td>
+            <td>{{ emi.emi | currency:'INR' }}</td>
+            <td>{{ emi.principalAmount | currency:'INR' }}</td>
+            <td>{{ emi.interestAmount | currency:'INR' }}</td>
+            <td>{{ emi.openingBalance | currency:'INR' }}</td>
+            <td>{{ emi.closingBalance | currency:'INR' }}</td>
+
+            <td>
+              <span
+                class="status"
+                [class.paid]="emi.paymentStatus === 'PAID'"
+                [class.pending]="emi.paymentStatus === 'PENDING'"
+                [class.cancelled]="emi.paymentStatus === 'CANCELLED'">
+
+                {{ emi.paymentStatus }}
+              </span>
+            </td>
+
+            <td>
+              <button
+                class="pay-button"
+                *ngIf="emi.paymentStatus === 'PENDING'"
+                type="button">
+
+                Pay
+              </button>
+
+              <span *ngIf="emi.paymentStatus === 'PAID'">
+                Paid
+              </span>
+
+              <span *ngIf="emi.paymentStatus === 'CANCELLED'">
+                —
+              </span>
+            </td>
+          </tr>
+
+          <tr *ngIf="emiSchedules.length === 0">
+            <td colspan="9" class="no-data">
+              No EMI schedule found for this loan account.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
