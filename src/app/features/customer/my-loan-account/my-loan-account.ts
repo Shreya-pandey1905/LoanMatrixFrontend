@@ -42,8 +42,23 @@ export class MyLoanAccount implements OnInit {
     this.loanAccountService.getCustomerAccounts(this.customerId).subscribe({
       next: (res) => {
         this.loading = false;
-        if (res && res.success && res.data && res.data.length > 0) {
-          this.accounts = res.data;
+        let list: any[] = [];
+        if (Array.isArray(res)) {
+          list = res;
+        } else if (res && Array.isArray(res.data)) {
+          list = res.data;
+        } else if (res && res.data?.loanAccounts && Array.isArray(res.data.loanAccounts)) {
+          list = res.data.loanAccounts;
+        }
+
+        if (list.length > 0) {
+          this.accounts = list.map(a => ({
+            ...a,
+            id: a.id || a.loanAccountId || 1,
+            loanAccountNo: a.loanAccountNo || ('LA-' + (a.id || a.loanAccountId || '1001')),
+            outstandingPrincipal: a.outstandingPrincipal ?? a.loanAmount ?? 0,
+            status: a.status || a.loanStatus || 'ACTIVE'
+          }));
           this.switchAccount(this.accounts[0]);
         } else {
           this.accounts = [];

@@ -1,22 +1,26 @@
 <div class="closure-page">
-  <!-- Top Account Selector[cite: 8] -->
+  <!-- Top Account Selector -->
   <div class="account-select-bar" *ngIf="accounts.length > 0">
     <label>Select Loan Account</label>
     <select [ngModel]="selectedAccount?.loanAccountNo" (ngModelChange)="onAccountChange($event)">
       <option *ngFor="let acc of accounts" [value]="acc.loanAccountNo">
-        {{ acc.loanAccountNo }}
+        {{ acc.loanAccountNo }} (₹ {{ acc.outstandingPrincipal | number:'1.0-0' }})
       </option>
     </select>
   </div>
 
-  <!-- Form Card (Screenshot 4)[cite: 9] -->
+  <div class="account-notice" *ngIf="!loading && accounts.length === 0">
+    <span>ℹ No active loan accounts detected for this customer. To submit a partial foreclosure, an active disbursed loan is required.</span>
+  </div>
+
+  <!-- Form Card -->
   <div class="card-box" *ngIf="selectedAccount">
     <div class="card-title">
       <span class="icon">📄</span>
-      <h3>Partial Request</h3>
+      <h3>Foreclosure Request</h3>
     </div>
 
-    <!-- Summary Details Bar[cite: 9] -->
+    <!-- Summary Details Bar -->
     <div class="summary-bar">
       <div class="sum-item">
         <span class="lbl">Loan Account Number</span>
@@ -27,12 +31,12 @@
         <strong class="val">₹ {{ selectedAccount.outstandingPrincipal | number:'1.2-2' }}</strong>
       </div>
       <div class="sum-item">
-        <span class="lbl">Next EMI Date</span>
-        <strong class="val">05 Nov 2026</strong>
+        <span class="lbl">Status</span>
+        <strong class="val">{{ selectedAccount.status || 'ACTIVE' }}</strong>
       </div>
     </div>
 
-    <!-- Radio Group for Type[cite: 9] -->
+    <!-- Radio Group for Type -->
     <div class="form-section">
       <label class="section-title">Select Foreclosure Type</label>
       <div class="radio-row">
@@ -47,7 +51,7 @@
       </div>
     </div>
 
-    <!-- Enter Partial Amount Field (Screenshot 4)[cite: 9] -->
+    <!-- Enter Partial Amount Field -->
     <div class="form-group">
       <label>Enter Partial Amount</label>
       <input 
@@ -57,13 +61,13 @@
         class="input-ctrl" />
     </div>
 
-    <!-- Expected Closure Date[cite: 9] -->
+    <!-- Expected Closure Date -->
     <div class="form-group">
       <label>Expected Closure Date</label>
       <input type="date" [(ngModel)]="expectedClosureDate" class="input-ctrl" />
     </div>
 
-    <!-- Reason / Notes[cite: 9] -->
+    <!-- Reason / Notes -->
     <div class="form-group">
       <label>Reason / Notes</label>
       <input type="text" [(ngModel)]="reason" placeholder="Enter foreclosure reason" class="input-ctrl" />
@@ -76,7 +80,7 @@
     </div>
   </div>
 
-  <!-- Bottom Requests Table with Pay Action[cite: 10] -->
+  <!-- Bottom Requests Table with Pay Action -->
   <div class="card-box" *ngIf="selectedAccount">
     <h4>My Foreclosure Requests</h4>
     <div class="table-wrap">

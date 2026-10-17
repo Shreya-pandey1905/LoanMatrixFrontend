@@ -49,17 +49,64 @@ export class PartialClosure implements OnInit {
   loadAccounts(): void {
     this.loading = true;
     this.loanAccountService.getCustomerAccounts(this.customerId).subscribe({
-      next: (res) => {
+      next: (res: any) => {
         this.loading = false;
-        if (res && res.success && res.data && res.data.length > 0) {
-          this.accounts = res.data;
+        let list: any[] = [];
+        if (Array.isArray(res)) {
+          list = res;
+        } else if (res && Array.isArray(res.data)) {
+          list = res.data;
+        } else if (res && res.data?.loanAccounts && Array.isArray(res.data.loanAccounts)) {
+          list = res.data.loanAccounts;
+        }
+
+        this.accounts = list.map((a: any) => ({
+          ...a,
+          id: a.id || a.loanAccountId || 1,
+          loanAccountNo: a.loanAccountNo || ('LA-' + (a.id || a.loanAccountId || '1001')),
+          outstandingPrincipal: a.outstandingPrincipal ?? a.loanAmount ?? 0,
+          status: a.status || a.loanStatus || 'ACTIVE'
+        }));
+
+        if (this.accounts.length > 0) {
           this.selectedAccount = this.accounts[0];
           this.loadRequests();
+        } else {
+          // Provide placeholder so the form is always visible
+          this.selectedAccount = {
+            id: 0,
+            loanAccountNo: 'No Active Loan',
+            customerName: 'Customer',
+            loanAmount: 0,
+            outstandingPrincipal: 0,
+            status: 'INACTIVE',
+            interestRate: 0,
+            tenureMonths: 0,
+            emiAmount: 0,
+            disbursementDate: '',
+            totalPaid: 0
+          };
         }
         this.cdr.detectChanges();
       },
-      error: () => {
+      error: (err) => {
         this.loading = false;
+        console.warn('Could not load loan accounts for partial closure:', err);
+        if (!this.selectedAccount) {
+          this.selectedAccount = {
+            id: 0,
+            loanAccountNo: 'No Active Loan',
+            customerName: 'Customer',
+            loanAmount: 0,
+            outstandingPrincipal: 0,
+            status: 'INACTIVE',
+            interestRate: 0,
+            tenureMonths: 0,
+            emiAmount: 0,
+            disbursementDate: '',
+            totalPaid: 0
+          };
+        }
         this.cdr.detectChanges();
       }
     });
@@ -71,12 +118,15 @@ export class PartialClosure implements OnInit {
   }
 
   loadRequests(): void {
-    if (!this.selectedAccount) return;
+    if (!this.selectedAccount || !this.selectedAccount.id) return;
     this.foreclosureService.getPartialRequestsByAccount(this.selectedAccount.id).subscribe({
       next: (res) => {
         if (res && res.success) {
           this.myRequests = res.data || [];
         }
+        this.cdr.detectChanges();
+      },
+      error: () => {
         this.cdr.detectChanges();
       }
     });
@@ -89,8 +139,8 @@ export class PartialClosure implements OnInit {
   }
 
   submitRequest(): void {
-    if (!this.selectedAccount) {
-      alert('Please select an active loan account.');
+    if (!this.selectedAccount || this.selectedAccount.id === 0) {
+      alert('Please select an active loan account to submit a partial foreclosure.');
       return;
     }
 
@@ -99,7 +149,7 @@ export class PartialClosure implements OnInit {
       return;
     }
 
-    if (this.partialAmount >= this.selectedAccount.outstandingPrincipal) {
+    if (this.selectedAccount.outstandingPrincipal > 0 && this.partialAmount >= this.selectedAccount.outstandingPrincipal) {
       alert('Partial amount cannot equal or exceed total outstanding principal. Use Full Foreclosure instead.');
       return;
     }
@@ -136,7 +186,7 @@ export class PartialClosure implements OnInit {
       next: () => {
         this.processingPayment = false;
         alert('Partial prepayment processed successfully! Outstanding principal updated.');
-        this.loadAccounts(); // Refreshes reduced principal balance
+        this.loadAccounts();
       },
       error: (err) => {
         this.processingPayment = false;
