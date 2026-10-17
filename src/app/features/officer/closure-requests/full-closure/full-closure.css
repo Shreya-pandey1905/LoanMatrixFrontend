@@ -1,0 +1,202 @@
+.officer-closure-page {
+  padding: 24px 32px;
+  background-color: #f8fafc;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #1e293b;
+}
+
+.header-banner h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+  color: #0f172a;
+}
+
+.header-banner p {
+  font-size: 13.5px;
+  color: #64748b;
+  margin: 0 0 20px 0;
+}
+
+.table-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 20px 24px;
+}
+
+.tab-indicator {
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f1f5f9;
+  margin-bottom: 14px;
+}
+
+.active-tab {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0d6efd;
+}
+
+.officer-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  text-align: left;
+}
+
+.officer-table th {
+  background-color: #ffffff;
+  color: #475569;
+  padding: 12px 14px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.officer-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.val-blue { color: #0284c7; font-weight: 600; }
+.bold-text { font-weight: 600; color: #0f172a; }
+.val-bold { font-weight: 700; color: #0f172a; }
+
+.badge-pending {
+  background-color: #dcfce7;
+  color: #15803d;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.btn-cyan-view {
+  background-color: #00bcd4;
+  color: #ffffff;
+  border: none;
+  padding: 5px 14px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.center-text {
+  text-align: center;
+  padding: 30px !important;
+  color: #94a3b8;
+}
+
+/* Modal */
+.modal-layer {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  padding: 16px;
+}
+
+.modal-sheet {
+  background: #ffffff;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 780px;
+  padding: 24px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.modal-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 14px;
+  margin-bottom: 20px;
+}
+
+.modal-top h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-approve {
+  background-color: #10b981;
+  color: white;
+  border: none;
+  padding: 6px 16px;
+  border-radius: 4px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-reject {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  padding: 6px 16px;
+  border-radius: 4px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: #64748b;
+}
+
+.modal-content-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.detail-block h4 {
+  font-size: 14px;
+  color: #475569;
+  margin: 0 0 12px 0;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 6px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13.5px;
+  padding-bottom: 8px;
+}
+
+.info-row .lbl { color: #64748b; }
+.info-row .val { font-weight: 600; }
+.val-danger { color: #ef4444; }
+.val-success { color: #10b981; }
+
+.note-section {
+  border-top: 1px solid #f1f5f9;
+  padding-top: 12px;
+}
+
+.note-section .lbl {
+  font-size: 12.5px;
+  color: #64748b;
+}
+
+.note-text {
+  margin: 4px 0 0 0;
+  font-size: 13.5px;
+  color: #1e293b;
+}

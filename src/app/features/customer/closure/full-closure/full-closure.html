@@ -1,0 +1,130 @@
+<div class="closure-page">
+  <!-- Top Account Selector Dropdown[cite: 8] -->
+  <div class="account-select-bar" *ngIf="accounts.length > 0">
+    <label>Select Loan Account</label>
+    <select [ngModel]="selectedAccount?.loanAccountNo" (ngModelChange)="onAccountChange($event)">
+      <option *ngFor="let acc of accounts" [value]="acc.loanAccountNo">
+        {{ acc.loanAccountNo }}
+      </option>
+    </select>
+  </div>
+
+  <!-- Foreclosure Form Card (Screenshots 3 & 5)[cite: 8, 10] -->
+  <div class="card-box" *ngIf="selectedAccount">
+    <div class="card-title">
+      <span class="icon">📄</span>
+      <h3>Foreclosure Request</h3>
+    </div>
+
+    <!-- Summary Details Bar[cite: 8] -->
+    <div class="summary-bar">
+      <div class="sum-item">
+        <span class="lbl">Loan Account Number</span>
+        <strong class="val val-blue">{{ selectedAccount.loanAccountNo }}</strong>
+      </div>
+      <div class="sum-item">
+        <span class="lbl">Outstanding Principal</span>
+        <strong class="val">₹ {{ selectedAccount.outstandingPrincipal | number:'1.2-2' }}</strong>
+      </div>
+      <div class="sum-item">
+        <span class="lbl">Next EMI Date</span>
+        <strong class="val">05 Nov 2026</strong>
+      </div>
+    </div>
+
+    <!-- Radio Group for Type[cite: 8] -->
+    <div class="form-section">
+      <label class="section-title">Select Foreclosure Type</label>
+      <div class="radio-row">
+        <label class="radio-opt">
+          <input type="radio" name="closureType" value="Full" checked (change)="onTypeToggle('Full')" />
+          <span>Full Foreclosure</span>
+        </label>
+        <label class="radio-opt">
+          <input type="radio" name="closureType" value="Partial" (change)="onTypeToggle('Partial')" />
+          <span>Partial Foreclosure</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Expected Closure Date[cite: 8] -->
+    <div class="form-group">
+      <label>Expected Closure Date</label>
+      <input type="date" [(ngModel)]="expectedClosureDate" class="input-ctrl" />
+    </div>
+
+    <!-- Reason / Notes[cite: 8] -->
+    <div class="form-group">
+      <label>Reason / Notes</label>
+      <input type="text" [(ngModel)]="reason" placeholder="Enter foreclosure reason" class="input-ctrl" />
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-primary" [disabled]="submitting" (click)="submitRequest()">
+        ✈ Submit Request
+      </button>
+    </div>
+  </div>
+
+  <!-- Bottom Requests Table with Pay Action[cite: 10] -->
+  <div class="card-box" *ngIf="selectedAccount">
+    <h4>My Foreclosure Requests</h4>
+    <div class="table-wrap">
+      <table class="grid-table">
+        <thead>
+          <tr>
+            <th>Loan Account</th>
+            <th>Amount</th>
+            <th>Type</th>
+            <th>Reason</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="myRequests.length === 0">
+            <td colspan="6" class="empty-cell">No foreclosure requests submitted yet.</td>
+          </tr>
+          <tr *ngFor="let r of myRequests">
+            <td class="val-blue">{{ r.loanAccountNo }}</td>
+            <td>₹ {{ r.totalSettlementAmount | number:'1.2-2' }}</td>
+            <td>{{ r.foreClosureType }}</td>
+            <td>{{ r.reason || 'None' }}</td>
+            <td>
+              <span [ngClass]="{
+                'badge-pending': r.status === 'Pending',
+                'badge-approved': r.status === 'Approved' && !r.isPaid,
+                'badge-completed': r.status === 'Completed' || r.isPaid,
+                'badge-rejected': r.status === 'Rejected'
+              }">
+                {{ r.status }}
+              </span>
+            </td>
+            <td>
+              <!-- Active Pay Button when Approved -->
+              <button 
+                *ngIf="r.status === 'Approved' && !r.isPaid" 
+                class="btn-pay-now" 
+                [disabled]="processingPayment"
+                (click)="onPayClick(r)">
+                💳 Pay Now
+              </button>
+
+              <span *ngIf="r.status === 'Completed' || r.isPaid" class="settled-text">
+                ✔ Settled
+              </span>
+
+              <span *ngIf="r.status === 'Pending'" class="waiting-text">
+                Awaiting Approval
+              </span>
+
+              <span *ngIf="r.status === 'Rejected'" class="rejected-text">
+                Declined
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

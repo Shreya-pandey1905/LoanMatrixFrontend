@@ -1,0 +1,106 @@
+<div class="account-profile-page">
+  <!-- Top Navigation Header -->
+  <div class="portal-header">
+    <div class="title-group">
+      <h2 class="title">My Loan Account</h2>
+      <p class="subtitle">Official loan account overview, principal balance, and interest specifications.</p>
+    </div>
+
+    <!-- Multi-Account Selector if user has multiple loans -->
+    <div class="account-switcher" *ngIf="accounts.length > 1">
+      <label>Select Account:</label>
+      <select [ngModel]="selectedAccount?.loanAccountNo" (ngModelChange)="onSelectAccountNo($event)">
+        <option *ngFor="let acc of accounts" [value]="acc.loanAccountNo">
+          {{ acc.loanAccountNo }} (₹ {{ acc.loanAmount | number:'1.0-0' }})
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="state-container">
+    <p>Loading loan account details...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && accounts.length === 0" class="empty-container">
+    <div class="empty-icon">🏛️</div>
+    <h3>No Active Loan Account</h3>
+    <p>Once your loan application is sanctioned and disbursed, your active loan account profile will appear here.</p>
+  </div>
+
+  <!-- Main Banking Account Profile Card (Clean Read-Only Display) -->
+  <div *ngIf="!loading && selectedAccount" class="account-card-wrapper">
+    <div class="account-card">
+      
+      <!-- Card Top Header -->
+      <div class="card-header">
+        <div class="bank-identity">
+          <div class="bank-avatar">🏛️</div>
+          <div>
+            <h4 class="facility-name">LoanMatrix Credit Facility</h4>
+            <span class="sub-facility">Active Loan Account</span>
+          </div>
+        </div>
+        <span class="status-pill" [class.active]="selectedAccount.status?.toUpperCase() === 'ACTIVE'">
+          {{ selectedAccount.status || 'ACTIVE' }}
+        </span>
+      </div>
+
+      <!-- Main Account Balance Display -->
+      <div class="balance-display-block">
+        <div class="balance-item">
+          <span class="bal-label">Outstanding Principal</span>
+          <h1 class="val-outstanding">₹ {{ selectedAccount.outstandingPrincipal | number:'1.2-2' }}</h1>
+        </div>
+        <div class="meta-tag">
+          <span>Loan Account No:</span>
+          <strong>{{ selectedAccount.loanAccountNo }}</strong>
+        </div>
+      </div>
+
+      <!-- Repaid Progress Meter -->
+      <div class="repayment-meter">
+        <div class="meter-labels">
+          <span>Total Paid Amount: <strong>₹ {{ (selectedAccount.totalPaid || 0) | number:'1.2-2' }}</strong></span>
+          <span class="pct-repaid">{{ calculateRepaidPercent(selectedAccount.loanAmount, selectedAccount.totalPaid) }}% Repaid</span>
+        </div>
+        <div class="meter-track">
+          <div class="meter-fill" [style.width.%]="calculateRepaidPercent(selectedAccount.loanAmount, selectedAccount.totalPaid)"></div>
+        </div>
+        <div class="meter-footnote">
+          <span>Sanctioned Loan Amount: ₹ {{ selectedAccount.loanAmount | number:'1.2-2' }}</span>
+        </div>
+      </div>
+
+      <!-- Loan Specifications Ledger (Strictly matching backend profile data) -->
+      <div class="ledger-details-grid">
+        <div class="ledger-row">
+          <span class="row-label">Primary Borrower</span>
+          <span class="row-value bold-text">{{ selectedProfile?.customerName || selectedAccount.customerName }}</span>
+        </div>
+        <div class="ledger-row">
+          <span class="row-label">Monthly EMI</span>
+          <span class="row-value val-emi">₹ {{ selectedAccount.emiAmount | number:'1.2-2' }}</span>
+        </div>
+        <div class="ledger-row">
+          <span class="row-label">Interest Rate</span>
+          <span class="row-value">{{ selectedAccount.interestRate }}% p.a.</span>
+        </div>
+        <div class="ledger-row">
+          <span class="row-label">Tenure Duration</span>
+          <span class="row-value">{{ selectedAccount.tenureMonths }} Months</span>
+        </div>
+        <div class="ledger-row">
+          <span class="row-label">Disbursement Date</span>
+          <span class="row-value">{{ selectedAccount.disbursementDate | date:'dd MMMM yyyy' }}</span>
+        </div>
+        <div class="ledger-row" *ngIf="selectedProfile?.createdAt">
+          <span class="row-label">Account Created At</span>
+          <span class="row-value">{{ selectedProfile?.createdAt | date:'dd/MM/yyyy hh:mm a' }}</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

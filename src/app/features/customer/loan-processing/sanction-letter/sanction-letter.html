@@ -1,0 +1,168 @@
+<div class="customer-sanction-page">
+  <div class="page-header">
+    <h2 class="title">Sanction Letter</h2>
+    <p class="subtitle">Review and download your official loan sanction letters issued by the bank.</p>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="state-container">
+    <p>Loading your sanction letters...</p>
+  </div>
+
+  <!-- Error / No letters found -->
+  <div *ngIf="!loading && myLetters.length === 0" class="empty-container">
+    <div class="empty-icon">📄</div>
+    <h3>No Sanction Letters Available</h3>
+    <p>Once your loan application review is approved by our officers, your sanction letter will appear here.</p>
+  </div>
+
+  <!-- Sanction Cards Grid -->
+  <div class="cards-grid" *ngIf="!loading && myLetters.length > 0">
+    <div *ngFor="let item of myLetters" class="sanction-card">
+      <div class="card-top">
+        <div>
+          <span class="app-no">Application #{{ item.dealId }}</span>
+          <h3 class="loan-type">{{ item.loanType }}</h3>
+        </div>
+        <span class="badge-sanctioned">SANCTIONED</span>
+      </div>
+
+      <div class="card-details">
+        <div class="detail-row">
+          <span>Sanctioned Amount:</span>
+          <strong class="val-amount">₹ {{ item.loanAmount | number:'1.2-2' }}</strong>
+        </div>
+        <div class="detail-row">
+          <span>Interest Rate:</span>
+          <strong>{{ item.interestRate }}% p.a.</strong>
+        </div>
+        <div class="detail-row">
+          <span>Tenure:</span>
+          <strong>{{ item.tenureMonths }} Months</strong>
+        </div>
+        <div class="detail-row">
+          <span>Monthly EMI:</span>
+          <strong class="val-emi">₹ {{ item.emiAmount | number:'1.2-2' }}</strong>
+        </div>
+        <div class="detail-row">
+          <span>Sanction Date:</span>
+          <span>{{ item.createdAt | date:'dd/MM/yyyy' }}</span>
+        </div>
+      </div>
+
+      <div class="card-actions">
+        <div class="action-btn-row">
+          <button class="btn-view" (click)="viewLetter(item.dealId)">View Sanction Letter</button>
+          <button class="btn-download" (click)="viewLetter(item.dealId)">Download PDF</button>
+        </div>
+
+        <!-- Persistent Accepted Button: Stays disabled and says Accepted ✓ after click/reload -->
+        <button 
+          class="btn-accept" 
+          [class.accepted]="isAccepted(item.dealId)"
+          [disabled]="isAccepted(item.dealId)" 
+          (click)="acceptSanction(item.dealId)">
+          {{ isAccepted(item.dealId) ? 'Accepted ✓' : 'Accept Terms' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= FORMAL SANCTION LETTER PREVIEW MODAL ================= -->
+<div class="modal-layer" *ngIf="showDocModal">
+  <div class="modal-card doc-card">
+    <div class="modal-head no-print">
+      <h3>Official Sanction Letter</h3>
+      <div class="top-actions">
+        <button class="btn-print" (click)="printLetter()" [disabled]="!docData">🖨 Print / Save as PDF</button>
+        <button class="btn-x" (click)="closeDocModal()">&times;</button>
+      </div>
+    </div>
+
+    <div *ngIf="loadingDoc" class="modal-content text-center" style="padding: 40px;">
+      <p>Loading formal sanction letter...</p>
+    </div>
+
+    <div class="modal-content paper-wrap" *ngIf="!loadingDoc && docData">
+      <div class="official-letter-sheet">
+        <h1 class="sheet-title">{{ docData.headerTitle }}</h1>
+        <p class="sheet-date">Date : {{ docData.sanctionDate }}</p>
+
+        <p class="salutation">Dear {{ docData.applicantName }},</p>
+        <p class="body-intro">
+          Thank you for choosing {{ docData.bankName }}. Based on your application and information provided therein, we are pleased to extend an offer to you for a loan as per the preliminary terms and conditions mentioned below:
+        </p>
+
+        <table class="terms-grid">
+          <tbody>
+            <tr>
+              <td class="col-head">Application No</td>
+              <td>{{ docData.applicationNo }}</td>
+            </tr>
+            <tr>
+              <td class="col-head">Sanction Date</td>
+              <td>{{ docData.sanctionDate }}</td>
+            </tr>
+            <tr>
+              <td class="col-head">Applicant Name</td>
+              <td>{{ docData.applicantName }}</td>
+            </tr>
+            <tr>
+              <td class="col-head">Mobile No</td>
+              <td>{{ docData.mobileNo }}</td>
+            </tr>
+            <tr>
+              <td class="col-head">Loan Type</td>
+              <td>{{ docData.loanType }}</td>
+            </tr>
+            <tr>
+              <td class="col-head">Loan Amount Sanctioned</td>
+              <td>Rs. {{ docData.loanAmountSanctioned | number:'1.2-2' }}</td>
+            </tr>
+            <tr>
+              <td class="col-head">Reference Interest Rate</td>
+              <td>{{ docData.referenceInterestRate }}</td>
+            </tr>
+            <tr>
+              <td class="col-head">Loan Tenure</td>
+              <td>{{ docData.loanTenure }} Months</td>
+            </tr>
+            <tr>
+              <td class="col-head">Total Processing Charges</td>
+              <td>{{ docData.totalProcessingCharges }}</td>
+            </tr>
+            <tr>
+              <td class="col-head">Origination Fee</td>
+              <td>{{ docData.originationFee }}</td>
+            </tr>
+            <tr>
+              <td class="col-head">Sanction Letter Validity</td>
+              <td>{{ docData.sanctionLetterValidity }} Days</td>
+            </tr>
+            <tr>
+              <td class="col-head">Amount of EMI</td>
+              <td>Rs. {{ docData.amountOfEmi | number:'1.2-2' }}</td>
+            </tr>
+            <tr>
+              <td class="col-head">Property Address</td>
+              <td>{{ docData.propertyAddress }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="conditions-box">
+          <p class="cond-title"><strong>Additional Conditions To Comply Prior To Loan Disbursal:</strong></p>
+          <ol class="cond-list">
+            <li *ngFor="let cond of docData.additionalConditions">{{ cond }}</li>
+          </ol>
+        </div>
+
+        <div class="signatory-area">
+          <p><strong>Authorized Signatory</strong></p>
+          <p class="bank-label">{{ docData.authorizedSignatory }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
