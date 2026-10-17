@@ -23,14 +23,15 @@ export class CibilService {
 
   private readonly apiUrl = 'http://localhost:8080/api/v1/cibil';
 
-  // TEMPORARY: Replace with an existing customer ID from MySQL.
-  private readonly customerId = 2;
-
   constructor(private http: HttpClient) {}
 
-  getCibilDetails(): Observable<ApiResponse<CibilResponse>> {
+  // Fetch CIBIL details for the selected customer
+  getCibilDetails(
+    customerId: number
+  ): Observable<ApiResponse<CibilResponse>> {
+
     const params = new HttpParams()
-      .set('customerId', this.customerId);
+      .set('customerId', customerId);
 
     return this.http.get<ApiResponse<CibilResponse>>(
       this.apiUrl,
@@ -38,9 +39,13 @@ export class CibilService {
     );
   }
 
-  generateCibilScore(): Observable<ApiResponse<CibilResponse>> {
+  // Generate CIBIL score for the selected customer
+  generateCibilScore(
+    customerId: number
+  ): Observable<ApiResponse<CibilResponse>> {
+
     const params = new HttpParams()
-      .set('customerId', this.customerId);
+      .set('customerId', customerId);
 
     return this.http.post<ApiResponse<CibilResponse>>(
       `${this.apiUrl}/generate`,

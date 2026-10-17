@@ -2,10 +2,13 @@
 import {
   Component,
   OnInit,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  inject
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
+
+import { AuthService } from '../../../../core/auth/services/auth';
 
 import {
   CibilService,
@@ -20,6 +23,8 @@ import {
   styleUrl: './cibil.css'
 })
 export class Cibil implements OnInit {
+
+  private readonly authService = inject(AuthService);
 
   customerName = '';
   panCard = '';
@@ -42,12 +47,19 @@ export class Cibil implements OnInit {
   }
 
   loadCustomerDetails(): void {
+    const customerId = this.authService.getCustomerId();
+
+    if (customerId === null) {
+      this.errorMessage = 'Customer ID not found. Please log in again.';
+      return;
+    }
+
     this.loading = true;
     this.errorMessage = '';
 
     this.cdr.detectChanges();
 
-    this.cibilService.getCibilDetails().subscribe({
+    this.cibilService.getCibilDetails(customerId).subscribe({
       next: (response) => {
         console.log('CIBIL API response:', response);
 
@@ -73,12 +85,19 @@ export class Cibil implements OnInit {
   }
 
   checkScore(): void {
+    const customerId = this.authService.getCustomerId();
+
+    if (customerId === null) {
+      this.errorMessage = 'Customer ID not found. Please log in again.';
+      return;
+    }
+
     this.generating = true;
     this.errorMessage = '';
 
     this.cdr.detectChanges();
 
-    this.cibilService.generateCibilScore().subscribe({
+    this.cibilService.generateCibilScore(customerId).subscribe({
       next: (response) => {
         const data: CibilResponse = response.data;
 
