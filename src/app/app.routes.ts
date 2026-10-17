@@ -12,21 +12,18 @@ export const routes: Routes = [
     path: 'login',
     canActivate: [guestGuard],
     loadComponent: () =>
-      import('./features/auth/login/login')
-        .then(m => m.Login)
+      import('./features/auth/login/login').then(m => m.Login)
   },
   {
     path: 'register',
     canActivate: [guestGuard],
     loadComponent: () =>
-      import('./features/auth/register/register')
-        .then(m => m.Register)
+      import('./features/auth/register/register').then(m => m.Register)
   },
   {
     path: 'verify-otp',
     loadComponent: () =>
-      import('./features/auth/verify-otp/verify-otp')
-        .then(m => m.VerifyOtp)
+      import('./features/auth/verify-otp/verify-otp').then(m => m.VerifyOtp)
   },
 
   // Customer Module
@@ -38,38 +35,32 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         loadComponent: () =>
-          import('./features/customer/dashboard/pages/dashboard')
-            .then(m => m.Dashboard)
+          import('./features/customer/dashboard/pages/dashboard').then(m => m.Dashboard)
       },
       {
         path: 'kyc',
         loadComponent: () =>
-          import('./features/customer/kyc/pages/kyc')
-            .then(m => m.Kyc)
+          import('./features/customer/kyc/pages/kyc').then(m => m.Kyc)
       },
       {
         path: 'cibil',
         loadComponent: () =>
-          import('./features/customer/cibil/pages/cibil')
-            .then(m => m.Cibil)
+          import('./features/customer/cibil/pages/cibil').then(m => m.Cibil)
       },
       {
         path: 'scorecard',
         loadComponent: () =>
-          import('./features/customer/scorecard/pages/scorecard')
-            .then(m => m.Scorecard)
+          import('./features/customer/scorecard/pages/scorecard').then(m => m.Scorecard)
       },
       {
         path: 'emi-schedule',
         loadComponent: () =>
-          import('./features/customer/emi-scheduler/pages/emi-scheduler')
-            .then(m => m.EmiScheduler)
+          import('./features/customer/emi-scheduler/pages/emi-scheduler').then(m => m.EmiScheduler)
       },
       {
         path: 'emis',
-        loadComponent: () =>
-          import('./features/customer/emi-scheduler/pages/emi-scheduler')
-            .then(m => m.EmiScheduler)
+        redirectTo: 'emi-schedule',
+        pathMatch: 'full'
       },
       {
         path: 'emi-scheduler',
@@ -79,20 +70,17 @@ export const routes: Routes = [
       {
         path: 'loan-processing/apply',
         loadComponent: () =>
-          import('./features/customer/loan-processing/apply-loan/apply-loan')
-            .then(m => m.ApplyLoan)
+          import('./features/customer/loan-processing/apply-loan/apply-loan').then(m => m.ApplyLoan)
       },
       {
         path: 'loan-processing/sanction-letter',
         loadComponent: () =>
-          import('./features/customer/loan-processing/sanction-letter/sanction-letter')
-            .then(m => m.CustomerSanctionLetter)
+          import('./features/customer/loan-processing/sanction-letter/sanction-letter').then(m => m.CustomerSanctionLetter)
       },
       {
         path: 'loan-processing/disbursement',
         loadComponent: () =>
-          import('./features/customer/loan-processing/disbursement/disbursement')
-            .then(m => m.Disbursement)
+          import('./features/customer/loan-processing/disbursement/disbursement').then(m => m.Disbursement)
       },
       {
         path: 'disbursement',
@@ -102,8 +90,7 @@ export const routes: Routes = [
       {
         path: 'loan-account',
         loadComponent: () =>
-          import('./features/customer/my-loan-account/my-loan-account')
-            .then(m => m.MyLoanAccount)
+          import('./features/customer/my-loan-account/my-loan-account').then(m => m.MyLoanAccount)
       },
       {
         path: 'loan-accounts',
@@ -113,14 +100,12 @@ export const routes: Routes = [
       {
         path: 'closure/full',
         loadComponent: () =>
-          import('./features/customer/closure/full-closure/full-closure')
-            .then(m => m.FullClosure)
+          import('./features/customer/closure/full-closure/full-closure').then(m => m.FullClosure)
       },
       {
         path: 'closure/partial',
         loadComponent: () =>
-          import('./features/customer/closure/partial-closure/partial-closure')
-            .then(m => m.PartialClosure)
+          import('./features/customer/closure/partial-closure/partial-closure').then(m => m.PartialClosure)
       },
       {
         path: 'closure',
@@ -130,41 +115,33 @@ export const routes: Routes = [
       {
         path: 'track-status',
         loadComponent: () =>
-          import('./features/customer/track-status/track-status')
-            .then(m => m.TrackStatus)
+          import('./features/customer/track-status/track-status').then(m => m.TrackStatus)
       },
       {
         path: 'support',
         loadComponent: () =>
-          import('./features/customer/support/support')
-            .then(m => m.CustomerSupport)
+          import('./features/customer/support/pages/support/support').then(m => m.Support)
       },
-
       {
         path: 'emi-payment',
         loadComponent: () =>
-          import('./features/customer/payment/pages/payment-test/payment-test')
-            .then(m => m.EmiPayment)
+          import('./features/customer/payment/pages/payment-test/payment-test').then(m => m.EmiPayment)
       },
       {
         path: 'partial-closure-payment',
         loadComponent: () =>
-          import('./features/customer/payment/pages/partial-closure-payment/partial-closure-payment')
-            .then(m => m.PartialClosurePayment)
+          import('./features/customer/payment/pages/partial-closure-payment/partial-closure-payment').then(m => m.PartialClosurePayment)
       },
       {
         path: 'full-closure-payment',
         loadComponent: () =>
-          import('./features/customer/payment/pages/full-closure-payment/full-closure-payment')
-            .then(m => m.FullClosurePayment)
+          import('./features/customer/payment/pages/full-closure-payment/full-closure-payment').then(m => m.FullClosurePayment)
       },
       {
         path: 'payment-history',
         loadComponent: () =>
-          import('./features/customer/payment/pages/payment-history/payment-history')
-            .then(m => m.PaymentHistory)
+          import('./features/customer/payment/pages/payment-history/payment-history').then(m => m.PaymentHistory)
       },
- 
       {
         path: '',
         redirectTo: 'dashboard',
@@ -182,20 +159,17 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         loadComponent: () =>
-          import('./features/officer/dashboard/pages/dashboard/dashboard')
-            .then(m => m.Dashboard)
+          import('./features/officer/dashboard/pages/dashboard/dashboard').then(m => m.Dashboard)
       },
       {
         path: 'kyc-verification',
         loadComponent: () =>
-          import('./features/officer/kyc-verification/pages/kyc-verification')
-            .then(m => m.KycVerification)
+          import('./features/officer/kyc-verification/pages/kyc-verification').then(m => m.KycVerification)
       },
       {
         path: 'kyc-verification/:customerId',
         loadComponent: () =>
-          import('./features/officer/kyc-verification/pages/kyc-details/kyc-details')
-            .then(m => m.KycDetails)
+          import('./features/officer/kyc-verification/pages/kyc-details/kyc-details').then(m => m.KycDetails)
       },
       {
         path: 'kyc-details/:customerId',
@@ -205,44 +179,42 @@ export const routes: Routes = [
       {
         path: 'reports',
         loadComponent: () =>
-          import('./features/officer/reports/pages/reports/reports')
-            .then(m => m.Reports)
+          import('./features/officer/reports/pages/reports/reports').then(m => m.Reports)
       },
       {
         path: 'eligibility-check',
         loadComponent: () =>
-          import('./features/officer/eligibility/pages/eligibility-check/eligibility-check')
-            .then(m => m.EligibilityCheck)
+          import('./features/officer/eligibility/pages/eligibility-check/eligibility-check').then(m => m.EligibilityCheck)
       },
       {
         path: 'eligibility-result/:customerId',
         loadComponent: () =>
-          import('./features/officer/eligibility/pages/eligibility-result/eligibility-result')
-            .then(m => m.EligibilityResult)
+          import('./features/officer/eligibility/pages/eligibility-result/eligibility-result').then(m => m.EligibilityResult)
+      },
+      {
+        path: 'support',
+        loadComponent: () =>
+          import('./features/officer/support/pages/support/support').then(m => m.Support)
       },
       {
         path: 'scorecard',
         loadComponent: () =>
-          import('./features/officer/scorecard/pages/scorecard-list/scorecard-list')
-            .then(m => m.ScorecardList)
+          import('./features/officer/scorecard/pages/scorecard-list/scorecard-list').then(m => m.ScorecardList)
       },
       {
         path: 'scorecard/:customerId',
         loadComponent: () =>
-          import('./features/officer/scorecard/pages/scorecard-details/scorecard-details')
-            .then(m => m.ScorecardDetails)
+          import('./features/officer/scorecard/pages/scorecard-details/scorecard-details').then(m => m.ScorecardDetails)
       },
       {
         path: 'emi-schedule',
         loadComponent: () =>
-          import('./features/customer/emi-scheduler/pages/emi-scheduler')
-            .then(m => m.EmiScheduler)
+          import('./features/customer/emi-scheduler/pages/emi-scheduler').then(m => m.EmiScheduler)
       },
       {
         path: 'loan-processing/loan-applications',
         loadComponent: () =>
-          import('./features/officer/loan-processing/loan-applications/loan-applications')
-            .then(m => m.LoanApplications)
+          import('./features/officer/loan-processing/loan-applications/loan-applications').then(m => m.LoanApplications)
       },
       {
         path: 'loan-applications',
@@ -252,8 +224,7 @@ export const routes: Routes = [
       {
         path: 'loan-processing/sanction-letters',
         loadComponent: () =>
-          import('./features/officer/loan-processing/sanction-letters/sanction-letters')
-            .then(m => m.SanctionLetters)
+          import('./features/officer/loan-processing/sanction-letters/sanction-letters').then(m => m.SanctionLetters)
       },
       {
         path: 'sanction-letters',
@@ -263,8 +234,7 @@ export const routes: Routes = [
       {
         path: 'loan-processing/disbursements',
         loadComponent: () =>
-          import('./features/officer/loan-processing/disbursements/disbursements')
-            .then(m => m.Disbursements)
+          import('./features/officer/loan-processing/disbursements/disbursements').then(m => m.Disbursements)
       },
       {
         path: 'disbursements',
@@ -279,8 +249,7 @@ export const routes: Routes = [
       {
         path: 'loan-processing/loan-accounts',
         loadComponent: () =>
-          import('./features/officer/loan-processing/loan-accounts/loan-accounts')
-            .then(m => m.LoanAccounts)
+          import('./features/officer/loan-processing/loan-accounts/loan-accounts').then(m => m.LoanAccounts)
       },
       {
         path: 'loan-accounts',
@@ -295,14 +264,12 @@ export const routes: Routes = [
       {
         path: 'full-closure',
         loadComponent: () =>
-          import('./features/officer/closure-requests/full-closure/full-closure')
-            .then(m => m.FullClosure)
+          import('./features/officer/closure-requests/full-closure/full-closure').then(m => m.FullClosure)
       },
       {
         path: 'partial-closure',
         loadComponent: () =>
-          import('./features/officer/closure-requests/partial-closure/partial-closure')
-            .then(m => m.PartialClosure)
+          import('./features/officer/closure-requests/partial-closure/partial-closure').then(m => m.PartialClosure)
       },
       {
         path: 'closure-requests/full-closure',
@@ -327,8 +294,7 @@ export const routes: Routes = [
       {
         path: 'support-ticket',
         loadComponent: () =>
-          import('./features/officer/support-tickets/support-tickets')
-            .then(m => m.SupportTickets)
+          import('./features/officer/support-tickets/support-tickets').then(m => m.SupportTickets)
       },
       {
         path: 'support-tickets',
@@ -339,12 +305,6 @@ export const routes: Routes = [
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full'
-      },
-      {
-        path: 'support',
-        loadComponent: () =>
-          import('./features/officer/support/pages/support/support')
-            .then(m => m.Support)
       }
     ]
   },

@@ -1,6 +1,8 @@
+
 import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService } from '../../../../core/auth/services/auth';
 import {
   EmiSchedulerService,
@@ -19,6 +21,7 @@ export class EmiScheduler implements OnInit {
   private readonly emiService = inject(EmiSchedulerService);
   private readonly authService = inject(AuthService);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly router = inject(Router);
 
   customerId = 1;
 
@@ -37,15 +40,18 @@ export class EmiScheduler implements OnInit {
 
   ngOnInit(): void {
     const storedCustomerId = this.authService.getCustomerId();
+
     if (storedCustomerId) {
       this.customerId = storedCustomerId;
     }
+
     this.loadLoanAccounts();
   }
 
   loadLoanAccounts(): void {
     this.loading = true;
     this.errorMessage = '';
+
     this.emiService.getLoanAccounts(this.customerId).subscribe({
       next: (response) => {
         const accounts = Array.isArray(response)
@@ -60,13 +66,16 @@ export class EmiScheduler implements OnInit {
         } else {
           this.loading = false;
         }
+
         this.cdr.detectChanges();
       },
       error: (error) => {
         console.error('Failed to load loan accounts:', error);
+
         this.errorMessage = error.status === 0
           ? 'Cannot connect to backend server. Please verify it is running.'
           : error.error?.message || 'Unable to load loan accounts.';
+
         this.loading = false;
         this.cdr.detectChanges();
       }
@@ -115,9 +124,11 @@ export class EmiScheduler implements OnInit {
         },
         error: (error) => {
           console.error('Failed to load EMI schedule:', error);
+
           this.errorMessage = error.status === 0
             ? 'Cannot connect to backend server. Please verify it is running.'
             : error.error?.message || 'Unable to load EMI schedule.';
+
           this.emiSchedules = [];
           this.calculateSummary();
           this.loading = false;
@@ -130,8 +141,9 @@ export class EmiScheduler implements OnInit {
     this.paidEmis = 0;
     this.pendingEmis = 0;
 
-    for (let emi of this.emiSchedules) {
+    for (const emi of this.emiSchedules) {
       const status = emi.paymentStatus?.toUpperCase();
+
       if (status === 'PAID') {
         this.paidEmis++;
       } else if (status === 'PENDING') {
@@ -141,9 +153,24 @@ export class EmiScheduler implements OnInit {
   }
 
   payEmi(emi: EmiSchedule): void {
-    const confirmed = confirm(`Proceed to pay EMI installment #${emi.installmentNo} for amount ₹ ${emi.emi}?`);
-    if (confirmed) {
-      alert('Payment gateway integration pending.');
+    if (this.selectedLoanAccountId === null) {
+      this.errorMessage = 'Please select a loan account.';
+      return;
     }
+
+    const confirmed = confirm(
+      `Proceed to pay EMI installment #${emi.installmentNo} for amount ₹ ${emi.emi}?`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.router.navigate(['/customer/emi-payment'], {
+      queryParams: {
+        loanAccountId: this.selectedLoanAccountId,
+        emiScheduleId: emi.id
+      }
+    });
   }
 }

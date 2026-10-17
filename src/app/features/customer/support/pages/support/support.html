@@ -1,0 +1,128 @@
+<div class="support-page">
+
+  <!-- Raise Support Ticket Card -->
+  <div class="support-card">
+
+    <div class="card-header">
+      <h2>Raise Support Ticket</h2>
+    </div>
+
+    <form (ngSubmit)="createTicket()" #supportForm="ngForm">
+
+      <!-- Subject -->
+      <div class="form-group">
+        <label for="subject">Subject</label>
+        <input
+          id="subject"
+          type="text"
+          name="subject"
+          [(ngModel)]="subject"
+          placeholder="Enter ticket subject"
+          required
+          maxlength="150"
+          #subjectField="ngModel"
+        />
+
+        <small
+          class="validation-error"
+          *ngIf="subjectField.invalid && subjectField.touched"
+        >
+          Subject is required.
+        </small>
+      </div>
+
+      <!-- Description -->
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea
+          id="description"
+          name="description"
+          [(ngModel)]="description"
+          placeholder="Describe your issue..."
+          rows="4"
+          required
+          maxlength="2000"
+          #descriptionField="ngModel"
+        ></textarea>
+
+        <small
+          class="validation-error"
+          *ngIf="descriptionField.invalid && descriptionField.touched"
+        >
+          Description is required.
+        </small>
+      </div>
+
+      <!-- Attachment -->
+      <!-- <div class="form-group">
+        <label for="attachment">Attachment</label>
+        <input
+          id="attachment"
+          type="file"
+          name="attachment"
+          accept=".pdf,.png,.jpg,.jpeg"
+        />
+      </div> -->
+
+      <!-- Submit Button -->
+      <div class="form-actions">
+        <button
+          type="submit"
+          class="submit-btn"
+          [disabled]="supportForm.invalid"
+        >
+          Submit Ticket
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+
+  <!-- My Tickets Section -->
+  <div class="tickets-section">
+
+    <div class="tickets-header">
+      <h3>My Tickets</h3>
+    </div>
+
+    <div class="table-wrapper">
+      <table class="tickets-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Subject</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Created At</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let ticket of tickets">
+            <td>{{ ticket.id }}</td>
+            <td>{{ ticket.subject }}</td>
+            <td>{{ ticket.description }}</td>
+            <td>
+              <span
+                class="status-badge"
+                [ngClass]="ticket.status?.toLowerCase()"
+              >
+                {{ ticket.status }}
+              </span>
+            </td>
+            <td>{{ ticket.createdAt | date:'dd MMM yyyy, hh:mm a' }}</td>
+          </tr>
+
+          <tr *ngIf="tickets.length === 0">
+            <td colspan="5" class="empty-state">
+              No support tickets found.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+</div>
