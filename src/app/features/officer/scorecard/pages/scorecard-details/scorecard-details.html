@@ -1,0 +1,136 @@
+
+<div class="scorecard-details-container">
+
+  <div class="page-header">
+    <div>
+      <h2>Customer Scorecard</h2>
+      <p>Credit score and loan eligibility information</p>
+    </div>
+
+    <button class="back-button" (click)="goBack()">
+      ← Back to Customers
+    </button>
+  </div>
+
+  @if (loading) {
+    <div class="status-card">
+      Loading scorecard details...
+    </div>
+  } @else if (errorMessage) {
+    <div class="error-card">
+      <h3>Unable to Display Scorecard</h3>
+      <p>{{ errorMessage }}</p>
+
+      <button class="back-button" (click)="goBack()">
+        Back to Customer List
+      </button>
+    </div>
+  } @else if (scoreCard) {
+
+    <div class="customer-card">
+      <div class="customer-avatar">
+        {{ scoreCard.customerName.charAt(0).toUpperCase() }}
+      </div>
+
+      <div class="customer-info">
+        <h3>{{ scoreCard.customerName }}</h3>
+        <p>Customer ID: {{ scoreCard.customerId }}</p>
+        <p>PAN Card: {{ scoreCard.panCard }}</p>
+      </div>
+
+      <span
+        class="eligibility-badge"
+        [class.eligible]="scoreCard.eligible"
+        [class.not-eligible]="!scoreCard.eligible"
+      >
+        {{ scoreCard.eligible ? 'Eligible' : 'Not Eligible' }}
+      </span>
+    </div>
+
+    <div class="section-heading">
+      <h3>Credit Score Overview</h3>
+      <p>Summary of the customer's credit profile</p>
+    </div>
+
+    <div class="metrics-grid">
+
+      <div class="metric-card">
+        <p class="metric-label">CIBIL Score</p>
+        <h2>{{ scoreCard.cibilScore }}</h2>
+        <span class="metric-note">Credit score</span>
+      </div>
+
+      <div class="metric-card">
+        <p class="metric-label">Risk Category</p>
+        <h2
+          class="risk-value"
+          [class.risky]="scoreCard.riskCategory === 'Risky'"
+          [class.safe]="scoreCard.riskCategory === 'Safe'"
+        >
+          {{ scoreCard.riskCategory }}
+        </h2>
+        <span class="metric-note">Assessed risk level</span>
+      </div>
+
+      <div class="metric-card">
+        <p class="metric-label">Eligible Loan Amount</p>
+        <h2>
+          {{ scoreCard.eligibleLoanAmount | currency:'INR':'symbol':'1.0-0' }}
+        </h2>
+        <span class="metric-note">Maximum eligible amount</span>
+      </div>
+
+    </div>
+
+    <div class="details-card">
+      <h3>Scorecard Details</h3>
+
+      <div class="detail-row">
+        <span>Customer ID</span>
+        <strong>{{ scoreCard.customerId }}</strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Customer Name</span>
+        <strong>{{ scoreCard.customerName }}</strong>
+      </div>
+
+      <div class="detail-row">
+        <span>PAN Card</span>
+        <strong>{{ scoreCard.panCard }}</strong>
+      </div>
+
+      <div class="detail-row">
+        <span>CIBIL Score</span>
+        <strong>{{ scoreCard.cibilScore }}</strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Risk Category</span>
+        <strong>{{ scoreCard.riskCategory }}</strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Eligible Loan Amount</span>
+        <strong>
+          {{ scoreCard.eligibleLoanAmount | currency:'INR':'symbol':'1.0-0' }}
+        </strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Eligibility Status</span>
+        <strong>
+          {{ scoreCard.eligible ? 'Eligible' : 'Not Eligible' }}
+        </strong>
+      </div>
+    </div>
+
+    <div class="footer-actions">
+      <button class="back-button" (click)="goBack()">
+        Back to Customer List
+      </button>
+    </div>
+
+  }
+
+</div>

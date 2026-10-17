@@ -24,7 +24,7 @@ export class CibilService {
   private readonly apiUrl = 'http://localhost:8080/api/v1/cibil';
 
   // TEMPORARY: Replace with an existing customer ID from MySQL.
-  private readonly customerId = 20;
+  private readonly customerId = 2;
 
   constructor(private http: HttpClient) {}
 

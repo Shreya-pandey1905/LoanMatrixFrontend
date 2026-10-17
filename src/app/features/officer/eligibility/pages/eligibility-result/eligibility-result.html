@@ -1,0 +1,127 @@
+
+<div class="result-page">
+
+  <div class="page-heading">
+    <h1>Eligibility Result</h1>
+    <p>Customer loan eligibility assessment and decision.</p>
+  </div>
+
+  <p *ngIf="errorMessage" class="alert error">
+    {{ errorMessage }}
+  </p>
+
+  <p *ngIf="successMessage" class="alert success">
+    {{ successMessage }}
+  </p>
+
+  <ng-container *ngIf="eligibility as result">
+
+    <div class="result-card">
+
+      <div class="card-heading">
+        <div>
+          <h2>{{ result.customerName }}</h2>
+          <p>Customer ID: {{ result.customerId }}</p>
+        </div>
+
+        <span
+          class="status"
+          [class.approved]="result.eligible"
+          [class.pending]="result.officerActionRequired && !decisionMade"
+          [class.rejected]="decisionMade && !result.eligible"
+          [class.auto-approved]="result.autoApproved"
+        >
+          {{
+            result.autoApproved
+              ? 'Auto Approved'
+              : decisionMade
+                ? (result.eligible ? 'Approved' : 'Rejected')
+                : result.officerActionRequired
+                  ? 'Pending Officer Decision'
+                  : result.eligible
+                    ? 'Approved'
+                    : 'Rejected'
+          }}
+        </span>
+      </div>
+
+      <h3>Customer Information</h3>
+
+      <div class="details-grid">
+
+        <div class="detail">
+          <span>Customer Name</span>
+          <strong>{{ result.customerName }}</strong>
+        </div>
+
+        <div class="detail">
+          <span>Customer ID</span>
+          <strong>{{ result.customerId }}</strong>
+        </div>
+
+        <div class="detail">
+          <span>PAN Card</span>
+          <strong>{{ result.panCard || 'Not available' }}</strong>
+        </div>
+
+        <div class="detail">
+          <span>CIBIL Score</span>
+          <strong>{{ result.cibilScore }}</strong>
+        </div>
+
+        <div class="detail">
+          <span>CIBIL Range</span>
+          <strong>{{ result.cibilRange }}</strong>
+        </div>
+
+        <div class="detail">
+          <span>Eligible Loan Amount</span>
+          <strong>
+            {{
+              result.eligibleLoanAmount !== null
+                ? (result.eligibleLoanAmount | currency:'INR':'symbol':'1.0-0')
+                : 'Not eligible'
+            }}
+          </strong>
+        </div>
+
+      </div>
+
+      <div class="actions">
+
+        <button
+          *ngIf="result.officerActionRequired && !decisionMade"
+          type="button"
+          class="approve-button"
+          (click)="approve()"
+          [disabled]="processing || decisionMade"
+        >
+          Approve
+        </button>
+
+        <button
+          *ngIf="result.officerActionRequired && !decisionMade"
+          type="button"
+          class="reject-button"
+          (click)="reject()"
+          [disabled]="processing || decisionMade"
+        >
+          Reject
+        </button>
+
+        <button
+          type="button"
+          class="back-button"
+          (click)="goBack()"
+          [disabled]="processing"
+        >
+          Back to Eligibility Check
+        </button>
+
+      </div>
+
+    </div>
+
+  </ng-container>
+
+</div>
