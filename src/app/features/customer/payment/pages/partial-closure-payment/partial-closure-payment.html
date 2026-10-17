@@ -1,0 +1,73 @@
+
+<div class="payment-test-page">
+  <div class="page-heading">
+    <p class="eyebrow">LOANMATRIX · PAYMENT INTEGRATION</p>
+    <h1>Partial Closure Payment</h1>
+    <p>Make a payment toward partially closing your loan.</p>
+  </div>
+
+  <div class="payment-card partial-closure-card">
+    <div class="card-heading">
+      <div>
+        <h2>Pay Partial Closure Amount</h2>
+        <p>
+          Enter an approved partial closure request ID.
+          The amount is retrieved from the backend.
+        </p>
+      </div>
+      <span class="test-label">PARTIAL CLOSURE</span>
+    </div>
+
+    <form (ngSubmit)="startPartialClosurePayment()">
+      <label for="partialClosureRequestId">
+        Partial Closure Request ID
+      </label>
+
+      <input
+        id="partialClosureRequestId"
+        name="partialClosureRequestId"
+        type="number"
+        min="1"
+        [(ngModel)]="partialClosureRequestId"
+        placeholder="Enter partial closure request ID"
+        required
+      />
+
+      <button type="submit" [disabled]="loading">
+        {{ loading ? 'Processing...' : 'Create Order & Pay' }}
+      </button>
+    </form>
+  </div>
+
+  <div class="payment-card order-summary" *ngIf="order">
+    <h2>Razorpay Order Created</h2>
+    <div class="summary-row">
+      <span>Order ID</span>
+      <strong>{{ order.razorpayOrderId }}</strong>
+    </div>
+    <div class="summary-row">
+      <span>Amount</span>
+      <strong>{{ order.amount | currency:'INR' }}</strong>
+    </div>
+    <div class="summary-row">
+      <span>Currency</span>
+      <strong>{{ order.currency }}</strong>
+    </div>
+  </div>
+
+  <div class="message success" *ngIf="message"
+       role="status" aria-live="polite">
+    {{ message }}
+  </div>
+
+  <div class="message error" *ngIf="errorMessage"
+       role="alert" aria-live="assertive">
+    {{ errorMessage }}
+  </div>
+
+  <!-- <div class="security-note">
+    <strong>Before testing</strong>
+    <p>Use an approved, unpaid partial closure request and
+      test-mode Razorpay credentials.</p>
+  </div> -->
+</div>

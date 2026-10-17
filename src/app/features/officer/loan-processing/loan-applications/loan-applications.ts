@@ -2,21 +2,10 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { LoanDealService } from '../../../services/loan-deal';
+import { ApplyLoanResponse } from '../../../models/loan-deal.model';
 
-export interface ApplyLoanResponseDto {
-  dealId: number;
-  customerId: number;
-  customerName: string;
-  loanType: string;
-  loanAmount: number;
-  approvedAmount?: number;
-  interestRate: number;
-  tenureMonths: number;
-  emiAmount: number;
-  status: string;
-  appliedDate?: string;
-  rejectionReason?: string;
-}
+export type ApplyLoanResponseDto = ApplyLoanResponse;
 
 @Component({
   selector: 'app-loan-applications',
@@ -49,9 +38,10 @@ export class LoanApplications implements OnInit {
   // Available loan types for dropdown
   loanTypeOptions: string[] = ['All Loan Types', 'Home Loan', 'Car Loan', 'Personal Loan', 'Education Loan'];
 
-  private readonly apiUrl = 'http://localhost:8081/api/deals';
+  private readonly fallbackApiUrl = 'http://localhost:8081/api/deals';
 
   constructor(
+    private loanDealService: LoanDealService,
     private http: HttpClient,
     private cdr: ChangeDetectorRef
   ) {}
@@ -64,24 +54,51 @@ export class LoanApplications implements OnInit {
     this.loading = true;
     this.cdr.detectChanges();
 
-    this.http.get<ApplyLoanResponseDto[]>(`${this.apiUrl}/pending`).subscribe({
-      next: (data) => {
+    // 1. Fetch from primary service endpoint /api/loans/pending
+    this.loanDealService.getPendingDeals().subscribe({
+      next: (res: any) => {
         this.loading = false;
-        this.deals = data || [];
+        let list: ApplyLoanResponseDto[] = [];
+        if (Array.isArray(res)) {
+          list = res;
+        } else if (res && Array.isArray(res.data)) {
+          list = res.data;
+        }
+        this.deals = list;
         this.applyAllFilters();
+        this.cdr.detectChanges();
       },
       error: (err) => {
-        this.loading = false;
-        console.error('Failed to fetch pending deals:', err);
-        this.deals = [];
-        this.applyAllFilters();
+        console.warn('Primary /api/loans/pending failed, trying fallback:', err);
+        // 2. Fallback to /api/deals/pending if used by another backend configuration
+        this.http.get<any>(`${this.fallbackApiUrl}/pending`).subscribe({
+          next: (res) => {
+            this.loading = false;
+            let list: ApplyLoanResponseDto[] = [];
+            if (Array.isArray(res)) {
+              list = res;
+            } else if (res && Array.isArray(res.data)) {
+              list = res.data;
+            }
+            this.deals = list;
+            this.applyAllFilters();
+            this.cdr.detectChanges();
+          },
+          error: (err2) => {
+            this.loading = false;
+            console.error('Failed to fetch pending deals from both endpoints:', err, err2);
+            this.deals = [];
+            this.applyAllFilters();
+            this.cdr.detectChanges();
+          }
+        });
       }
     });
   }
 
   // Unified filter handler
   applyAllFilters(): void {
-    let result = [...this.deals];
+    let result = Array.isArray(this.deals) ? [...this.deals] : [];
 
     // 1. Search Query
     if (this.searchTerm && this.searchTerm.trim() !== '') {
@@ -98,33 +115,35 @@ export class LoanApplications implements OnInit {
       const targetType = this.selectedLoanType.replace(/\s+/g, '_').toUpperCase();
       result = result.filter(d => {
         const itemType = (d.loanType || '').replace(/\s+/g, '_').toUpperCase();
-        return itemType.includes(targetType) || targetType.includes(itemType);
+        return itemType === targetType || itemType.includes(targetType);
       });
     }
 
     // 3. Min Amount
     if (this.minAmount !== null && this.minAmount > 0) {
-      result = result.filter(d => d.loanAmount >= this.minAmount!);
+      result = result.filter(d => d.loanAmount >= (this.minAmount as number));
     }
 
     // 4. Max Amount
     if (this.maxAmount !== null && this.maxAmount > 0) {
-      result = result.filter(d => d.loanAmount <= this.maxAmount!);
+      result = result.filter(d => d.loanAmount <= (this.maxAmount as number));
     }
 
-    // 5. Date Range Pickers
+    // 5. From Date
     if (this.fromDate) {
-      const from = new Date(this.fromDate).getTime();
       result = result.filter(d => {
-        const itemDate = d.appliedDate ? new Date(d.appliedDate).getTime() : 0;
-        return itemDate >= from;
+        if (!d.appliedDate) return true;
+        const dDate = new Date(d.appliedDate).toISOString().split('T')[0];
+        return dDate >= this.fromDate;
       });
     }
+
+    // 6. To Date
     if (this.toDate) {
-      const to = new Date(this.toDate).getTime() + (24 * 60 * 60 * 1000 - 1);
       result = result.filter(d => {
-        const itemDate = d.appliedDate ? new Date(d.appliedDate).getTime() : 0;
-        return itemDate <= to;
+        if (!d.appliedDate) return true;
+        const dDate = new Date(d.appliedDate).toISOString().split('T')[0];
+        return dDate <= this.toDate;
       });
     }
 
@@ -134,19 +153,21 @@ export class LoanApplications implements OnInit {
   }
 
   onDatePresetChange(): void {
-    const now = new Date();
+    const today = new Date();
+
     if (this.dateFilterPreset === 'Today') {
-      const str = now.toISOString().split('T')[0];
-      this.fromDate = str;
-      this.toDate = str;
+      const iso = today.toISOString().split('T')[0];
+      this.fromDate = iso;
+      this.toDate = iso;
     } else if (this.dateFilterPreset === 'This Week') {
-      const day = now.getDay();
-      const firstDay = new Date(now.setDate(now.getDate() - day));
-      this.fromDate = firstDay.toISOString().split('T')[0];
+      const day = today.getDay();
+      const diff = today.getDate() - day + (day === 0 ? -6 : 1);
+      const startOfWeek = new Date(today.setDate(diff));
+      this.fromDate = startOfWeek.toISOString().split('T')[0];
       this.toDate = new Date().toISOString().split('T')[0];
     } else if (this.dateFilterPreset === 'This Month') {
-      const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-      this.fromDate = firstDay.toISOString().split('T')[0];
+      const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+      this.fromDate = startOfMonth.toISOString().split('T')[0];
       this.toDate = new Date().toISOString().split('T')[0];
     } else {
       this.fromDate = '';
@@ -190,13 +211,27 @@ export class LoanApplications implements OnInit {
   }
 
   reviewDeal(dealId: number, status: 'APPROVED' | 'REJECTED'): void {
-    const officerId = localStorage.getItem('officerId') || 1;
-    this.http.post(`${this.apiUrl}/${dealId}/review?officerId=${officerId}&status=${status}`, {}).subscribe({
+    const rawOfficerId = localStorage.getItem('officerId') || '1';
+    const officerId = Number(rawOfficerId) || 1;
+
+    // Call service PUT /api/loans/{dealId}/review with payload
+    this.loanDealService.reviewDeal(dealId, { officerId, status }).subscribe({
       next: () => {
+        alert(`Deal #${dealId} has been ${status.toLowerCase()} successfully!`);
         this.fetchPendingDeals();
       },
-      error: (err) => {
-        console.error('Failed to review deal:', err);
+      error: () => {
+        // Fallback to POST /api/deals/{dealId}/review
+        this.http.post(`${this.fallbackApiUrl}/${dealId}/review?officerId=${officerId}&status=${status}`, {}).subscribe({
+          next: () => {
+            alert(`Deal #${dealId} has been ${status.toLowerCase()} successfully!`);
+            this.fetchPendingDeals();
+          },
+          error: (err) => {
+            console.error('Failed to review deal:', err);
+            alert(err.error?.message || `Failed to ${status.toLowerCase()} deal.`);
+          }
+        });
       }
     });
   }

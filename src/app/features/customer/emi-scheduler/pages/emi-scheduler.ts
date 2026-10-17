@@ -139,4 +139,11 @@ export class EmiScheduler implements OnInit {
       }
     }
   }
+
+  payEmi(emi: EmiSchedule): void {
+    const confirmed = confirm(`Proceed to pay EMI installment #${emi.installmentNo} for amount ₹ ${emi.emi}?`);
+    if (confirmed) {
+      alert('Payment gateway integration pending.');
+    }
+  }
 }

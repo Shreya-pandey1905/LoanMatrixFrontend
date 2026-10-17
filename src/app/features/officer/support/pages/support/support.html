@@ -1,0 +1,234 @@
+
+<div class="support-page">
+
+  <div class="page-header">
+    <div>
+      <h2>Customer Support</h2>
+      <p>Review customer issues and manage support tickets.</p>
+    </div>
+
+    <button
+      type="button"
+      class="refresh-btn"
+      (click)="loadTickets()"
+      [disabled]="loading">
+      {{ loading ? 'Refreshing...' : 'Refresh Tickets' }}
+    </button>
+  </div>
+
+  
+  <div class="alert success" *ngIf="successMessage" role="status">
+    {{ successMessage }}
+  </div>
+
+  <div class="alert error" *ngIf="errorMessage" role="alert">
+    {{ errorMessage }}
+  </div>
+
+  
+  <div class="summary-grid">
+    <div class="summary-card">
+      <span>Total Tickets</span>
+      <h3>{{ tickets.length }}</h3>
+    </div>
+
+    <div class="summary-card">
+      <span>Open</span>
+      <h3>{{ countByStatus('OPEN') }}</h3>
+    </div>
+
+    <div class="summary-card">
+      <span>In Progress</span>
+      <h3>{{ countByStatus('IN_PROGRESS') }}</h3>
+    </div>
+
+    <div class="summary-card">
+      <span>Resolved</span>
+      <h3>{{ countByStatus('RESOLVED') }}</h3>
+    </div>
+  </div>
+
+
+  <div class="message" *ngIf="loading">
+    Loading support tickets...
+  </div>
+
+
+  <div class="table-container" *ngIf="!loading">
+    <table>
+      <thead>
+        <tr>
+          <th>Ticket ID</th>
+          <th>Customer ID</th>
+          <th>Subject</th>
+          <th>Loan Account</th>
+          <th>Created At</th>
+          <th>Status</th>
+          <th>Change Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let ticket of tickets">
+
+          <td>#{{ ticket.id }}</td>
+
+          <td>{{ ticket.customerId }}</td>
+
+          <td class="subject-cell">
+            {{ ticket.subject }}
+          </td>
+
+          <td>
+            {{ ticket.loanAccountId ?? 'N/A' }}
+          </td>
+
+          <td>
+            {{ ticket.createdAt | date:'dd MMM yyyy, hh:mm a' }}
+          </td>
+
+        
+          <td>
+            <span
+              class="status-badge"
+              [ngClass]="'status-' + ticket.status.toLowerCase()">
+              {{ formatStatus(ticket.status) }}
+            </span>
+          </td>
+
+          <td>
+            <select
+              [ngModel]="ticket.status"
+              (ngModelChange)="updateStatus(ticket.id, $event)"
+              [disabled]="updatingTicketId === ticket.id"
+              [attr.aria-label]="'Change status for ticket ' + ticket.id">
+
+              <option
+                *ngFor="let status of statuses"
+                [ngValue]="status">
+                {{ formatStatus(status) }}
+              </option>
+
+            </select>
+
+            <small *ngIf="updatingTicketId === ticket.id">
+              Updating...
+            </small>
+          </td>
+
+         
+          <td>
+            <button
+              type="button"
+              class="view-btn"
+              (click)="viewTicket(ticket.id)">
+              View Details
+            </button>
+          </td>
+
+        </tr>
+
+      
+        <tr *ngIf="tickets.length === 0">
+          <td colspan="8" class="empty-message">
+            No support tickets found.
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+
+  <div class="modal-backdrop" *ngIf="detailsLoading">
+    <div class="loading-modal">
+      Loading ticket details...
+    </div>
+  </div>
+
+  <div
+    class="modal-backdrop"
+    *ngIf="selectedTicket"
+    (click)="closeTicket()">
+
+    <div
+      class="ticket-modal"
+      (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <div>
+          <h3>Support Ticket Details</h3>
+          <p>Ticket #{{ selectedTicket.id }}</p>
+        </div>
+
+        <button
+          type="button"
+          class="close-btn"
+          (click)="closeTicket()"
+          aria-label="Close ticket details">
+          &times;
+        </button>
+      </div>
+
+      <!-- Modal Content -->
+      <div class="modal-body">
+
+        <div class="detail-row">
+          <span>Customer ID</span>
+          <strong>{{ selectedTicket.customerId }}</strong>
+        </div>
+
+        <div class="detail-row">
+          <span>Loan Account ID</span>
+          <strong>
+            {{ selectedTicket.loanAccountId ?? 'N/A' }}
+          </strong>
+        </div>
+
+        <div class="detail-row">
+          <span>Subject</span>
+          <strong>{{ selectedTicket.subject }}</strong>
+        </div>
+
+        <div class="description-section">
+          <span>Description</span>
+          <p>{{ selectedTicket.description }}</p>
+        </div>
+
+        <div class="detail-row">
+          <span>Status</span>
+          <strong>
+            {{ formatStatus(selectedTicket.status) }}
+          </strong>
+        </div>
+
+        <div class="detail-row">
+          <span>Created At</span>
+          <strong>
+            {{ selectedTicket.createdAt | date:'dd MMM yyyy, hh:mm a' }}
+          </strong>
+        </div>
+
+        <div class="detail-row">
+          <span>Last Updated</span>
+          <strong>
+            {{ selectedTicket.updatedAt | date:'dd MMM yyyy, hh:mm a' }}
+          </strong>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="close-modal-btn"
+          (click)="closeTicket()">
+          Close
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</div>

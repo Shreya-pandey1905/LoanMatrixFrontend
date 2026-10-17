@@ -103,9 +103,18 @@ export class Login implements AfterViewInit, OnDestroy {
   }
 
   private redirectByRole(role: string): void {
-    const normalizedRole = role.trim().toUpperCase();
+    const rawRole = role ? role.trim().toUpperCase() : '';
 
-    if (normalizedRole === 'CUSTOMER') {
+    const isCustomer = rawRole === 'CUSTOMER' || rawRole === 'ROLE_CUSTOMER';
+    const isOfficer =
+      rawRole === 'OFFICER' ||
+      rawRole === 'LOAN_OFFICER' ||
+      rawRole === 'LOAN OFFICER' ||
+      rawRole === 'ROLE_OFFICER' ||
+      rawRole === 'ROLE_LOAN_OFFICER' ||
+      rawRole.includes('OFFICER');
+
+    if (isCustomer) {
       if (this.authService.getCustomerId() === null) {
         this.authService.logout();
 
@@ -119,17 +128,13 @@ export class Login implements AfterViewInit, OnDestroy {
 
       this.router.navigate(['/customer/dashboard']);
 
-    } else if (
-      normalizedRole === 'OFFICER' ||
-      normalizedRole === 'LOAN_OFFICER' ||
-      normalizedRole === 'LOAN OFFICER'
-    ) {
+    } else if (isOfficer) {
       this.router.navigate(['/officer/dashboard']);
 
     } else {
       this.authService.logout();
 
-      alert('Your account has an invalid or unsupported role.');
+      alert('Your account has an invalid or unsupported role: ' + role);
 
       this.router.navigate(['/login']);
     }
@@ -158,6 +163,9 @@ export class Login implements AfterViewInit, OnDestroy {
 
           if (response.data.customerId != null) {
             this.authService.saveCustomerId(response.data.customerId);
+            localStorage.setItem('officerId', response.data.customerId.toString());
+          } else {
+            localStorage.setItem('officerId', '1');
           }
 
           alert(response.message || 'Google login successful.');
@@ -209,6 +217,9 @@ export class Login implements AfterViewInit, OnDestroy {
 
           if (response.data.customerId != null) {
             this.authService.saveCustomerId(response.data.customerId);
+            localStorage.setItem('officerId', response.data.customerId.toString());
+          } else {
+            localStorage.setItem('officerId', '1');
           }
 
           alert(response.message || 'Login successful.');

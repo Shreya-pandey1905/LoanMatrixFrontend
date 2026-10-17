@@ -1,4 +1,3 @@
-
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 
@@ -13,15 +12,26 @@ export const guestGuard: CanActivateFn = () => {
     return true;
   }
 
-  const role = authService.getRole()?.trim().toUpperCase();
+  const rawRole = authService.getRole()?.trim().toUpperCase() || '';
+  const isOfficer =
+    rawRole === 'OFFICER' ||
+    rawRole === 'LOAN_OFFICER' ||
+    rawRole === 'LOAN OFFICER' ||
+    rawRole === 'ROLE_OFFICER' ||
+    rawRole === 'ROLE_LOAN_OFFICER' ||
+    rawRole.includes('OFFICER');
+
+  const isCustomer =
+    rawRole === 'CUSTOMER' ||
+    rawRole === 'ROLE_CUSTOMER';
 
   // Redirect already logged-in customers.
-  if (role === 'CUSTOMER') {
+  if (isCustomer) {
     return router.createUrlTree(['/customer/dashboard']);
   }
 
   // Redirect already logged-in loan officers.
-  if (role === 'LOAN_OFFICER' || role === 'LOAN OFFICER') {
+  if (isOfficer) {
     return router.createUrlTree(['/officer/dashboard']);
   }
 

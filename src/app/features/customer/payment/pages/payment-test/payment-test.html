@@ -1,0 +1,78 @@
+
+<div class="payment-test-page">
+  <div class="page-heading">
+    <p class="eyebrow">LOANMATRIX · PAYMENT INTEGRATION</p>
+    <h1>EMI Payment</h1>
+    <p>Pay your scheduled EMI securely through Razorpay.</p>
+  </div>
+
+  <div class="payment-card">
+    <div class="card-heading">
+      <div>
+        <h2>Pay EMI</h2>
+        <p>Enter your loan account and EMI schedule IDs.</p>
+      </div>
+      <span class="test-label">EMI PAYMENT</span>
+    </div>
+
+    <form (ngSubmit)="startPayment()">
+      <label for="loanAccountId">Loan Account ID</label>
+      <input
+        id="loanAccountId"
+        name="loanAccountId"
+        type="number"
+        min="1"
+        [(ngModel)]="loanAccountId"
+        placeholder="Enter loan account ID"
+        required
+      />
+
+      <label for="emiScheduleId">EMI Schedule ID</label>
+      <input
+        id="emiScheduleId"
+        name="emiScheduleId"
+        type="number"
+        min="1"
+        [(ngModel)]="emiScheduleId"
+        placeholder="Enter EMI schedule ID"
+        required
+      />
+
+      <button type="submit" [disabled]="loading">
+        {{ loading ? 'Processing...' : 'Create Order & Pay' }}
+      </button>
+    </form>
+  </div>
+
+  <div class="payment-card order-summary" *ngIf="order">
+    <h2>Razorpay Order Created</h2>
+    <div class="summary-row">
+      <span>Order ID</span>
+      <strong>{{ order.razorpayOrderId }}</strong>
+    </div>
+    <div class="summary-row">
+      <span>Amount</span>
+      <strong>{{ order.amount | currency:'INR' }}</strong>
+    </div>
+    <div class="summary-row">
+      <span>Currency</span>
+      <strong>{{ order.currency }}</strong>
+    </div>
+  </div>
+
+  <div class="message success" *ngIf="message"
+       role="status" aria-live="polite">
+    {{ message }}
+  </div>
+
+  <div class="message error" *ngIf="errorMessage"
+       role="alert" aria-live="assertive">
+    {{ errorMessage }}
+  </div>
+
+  <!-- <div class="security-note">
+    <strong>Before testing</strong>
+    <p>Use Razorpay test-mode credentials. The backend must verify
+      the payment before it is treated as successful.</p>
+  </div> -->
+</div>
