@@ -40,12 +40,20 @@ export const routes: Routes = [
     component: CustomerLayout,
     canActivate: [authGuard],
     children: [
+      
       {
         path: 'dashboard',
         loadComponent: () =>
           import('./features/customer/dashboard/pages/dashboard')
             .then(m => m.Dashboard)
       },
+
+{
+  path: 'kyc',
+  loadComponent: () =>
+    import('./features/customer/kyc/pages/kyc')
+      .then(m => m.Kyc)
+},
       {
         path: 'cibil',
         loadComponent: () =>

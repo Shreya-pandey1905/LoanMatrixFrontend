@@ -1,0 +1,57 @@
+
+<div class="kyc-page">
+
+  <h2>Upload KYC Documents</h2>
+
+  <label>Document Type</label>
+
+  <mat-form-field appearance="outline">
+    <mat-select [(ngModel)]="documentType">
+      @for (type of documentTypes; track type) {
+        <mat-option [value]="type">{{ type }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <label>Choose File</label>
+  <input type="file" accept=".pdf,.jpg,.jpeg,.png"
+         (change)="onFileSelected($event)">
+<!-- 
+  <button mat-flat-button color="primary" (click)="uploadDocument()">
+    Upload Document
+  </button> -->
+
+  <button
+  mat-flat-button
+  color="primary"
+  (click)="uploadDocument()"
+  [disabled]="isUploading">
+  {{ isUploading ? 'Uploading...' : 'Upload Document' }}
+</button>
+  <h2>Uploaded Documents</h2>
+
+  <table mat-table [dataSource]="documents">
+
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Document Name</th>
+      <td mat-cell *matCellDef="let doc">{{ doc.documentType }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="view">
+      <th mat-header-cell *matHeaderCellDef>View</th>
+      <td mat-cell *matCellDef="let doc">
+        <button mat-button (click)="viewDocument(doc)">View</button>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef>Status</th>
+      <td mat-cell *matCellDef="let doc">{{ doc.verificationStatus }}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+  </table>
+
+</div>
