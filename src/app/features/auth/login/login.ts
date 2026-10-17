@@ -108,20 +108,29 @@ export class Login implements AfterViewInit, OnDestroy {
     if (normalizedRole === 'CUSTOMER') {
       if (this.authService.getCustomerId() === null) {
         this.authService.logout();
-        alert('Customer ID is missing from the login response. Please contact support.');
+
+        alert(
+          'Customer ID is missing from the login response. Please contact support.'
+        );
+
         this.router.navigate(['/login']);
         return;
       }
 
       this.router.navigate(['/customer/dashboard']);
+
     } else if (
+      normalizedRole === 'OFFICER' ||
       normalizedRole === 'LOAN_OFFICER' ||
       normalizedRole === 'LOAN OFFICER'
     ) {
       this.router.navigate(['/officer/dashboard']);
+
     } else {
       this.authService.logout();
+
       alert('Your account has an invalid or unsupported role.');
+
       this.router.navigate(['/login']);
     }
   }
@@ -152,6 +161,7 @@ export class Login implements AfterViewInit, OnDestroy {
           }
 
           alert(response.message || 'Google login successful.');
+
           this.redirectByRole(response.data.role);
         } else {
           alert(response.message || 'Google login failed.');
@@ -159,6 +169,7 @@ export class Login implements AfterViewInit, OnDestroy {
 
         this.googleLoading = false;
       },
+
       error: (error) => {
         console.error('Google login failed:', error);
 
@@ -201,6 +212,7 @@ export class Login implements AfterViewInit, OnDestroy {
           }
 
           alert(response.message || 'Login successful.');
+
           this.redirectByRole(response.data.role);
         } else {
           alert(
@@ -211,6 +223,7 @@ export class Login implements AfterViewInit, OnDestroy {
 
         this.loading = false;
       },
+
       error: (error) => {
         console.error('Login failed:', error);
 
