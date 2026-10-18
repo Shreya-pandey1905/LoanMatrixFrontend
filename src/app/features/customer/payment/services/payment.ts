@@ -15,9 +15,14 @@ import {
   providedIn: 'root'
 })
 export class PaymentService {
-  private readonly baseUrl = 'http://localhost:8080/api/v1/payment';
+  private readonly baseUrl =
+    'http://localhost:8080/api/v1/payment';
 
   constructor(private http: HttpClient) {}
+
+  // =========================
+  // EMI PAYMENT
+  // =========================
 
   createEmiOrder(
     request: CreatePaymentRequest
@@ -39,6 +44,10 @@ export class PaymentService {
     );
   }
 
+  // =========================
+  // PARTIAL CLOSURE PAYMENT
+  // =========================
+
   createPartialClosureOrder(
     requestId: number
   ): Observable<PaymentOrderResponse> {
@@ -59,55 +68,41 @@ export class PaymentService {
     );
   }
 
-  // createFullClosureOrder(
-  //   requestId: number
-  // ): Observable<PaymentOrderResponse> {
-  //   return this.http.post<PaymentOrderResponse>(
-  //     `${this.baseUrl}/full-closure/create-order/${requestId}`,
-  //     {}
-  //   );
-  // }
+  // =========================
+  // FULL CLOSURE PAYMENT
+  // =========================
 
-  // verifyFullClosurePayment(
-  //   request: VerifyPaymentRequest
-  // ): Observable<string> {
-  //   return this.http.post(
-  //     `${this.baseUrl}/full-closure/verify-payment`,
-  //     request,
-  //     { responseType: 'text' }
-  //   );
-  // }
+  createFullClosureOrder(
+    requestId: number
+  ): Observable<PaymentOrderResponse> {
+    return this.http.post<PaymentOrderResponse>(
+      `${this.baseUrl}/full-closure/create-order/${requestId}`,
+      {}
+    );
+  }
 
-  // getPaymentHistory(
-  //   loanAccountId: number
-  // ): Observable<PaymentHistoryResponse[]> {
-  //   return this.http
-  //     .get<ApiResponse<PaymentHistoryResponse[]>>(
-  //       `${this.baseUrl}/history/${loanAccountId}`
-  //     )
-  //     .pipe(map(res => res.data));
-  // }
+  verifyFullClosurePayment(
+    request: VerifyPaymentRequest
+  ): Observable<string> {
+    return this.http.post(
+      `${this.baseUrl}/full-closure/verify-payment`,
+      request,
+      { responseType: 'text' }
+    );
+  }
 
-  getPaymentHistory(loanAccountId: number) {
-  return this.http.get<ApiResponse<PaymentHistoryResponse[]>>(
-    `${this.baseUrl}/history/${loanAccountId}`
-  );
+  // =========================
+  // PAYMENT HISTORY
+  // =========================
+
+  getPaymentHistory(
+    loanAccountId: number
+  ): Observable<ApiResponse<PaymentHistoryResponse[]>> {
+    return this.http.get<ApiResponse<PaymentHistoryResponse[]>>(
+      `${this.baseUrl}/history/${loanAccountId}`
+    );
+  }
 }
 
-createFullClosureOrder(requestId: number): Observable<PaymentOrderResponse> {
-  return this.http.post<PaymentOrderResponse>(
-    `${this.baseUrl}/full-closure/create-order/${requestId}`,
-    {}
-  );
-}
 
-verifyFullClosurePayment(
-  request: VerifyPaymentRequest
-): Observable<string> {
-  return this.http.post(
-    `${this.baseUrl}/full-closure/verify-payment`,
-    request,
-    { responseType: 'text' }
-  );
-}
-}
+
